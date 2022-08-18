@@ -22,38 +22,78 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         //告诉子类去刷新内部bean工厂
         ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
         //准备bean工厂在上下文中使用
-        //prepareBeanFactory(beanFactory);
+        prepareBeanFactory(beanFactory);
         //允许在上下文子类中对bean工厂进行后处理
-        //postProcessBeanFactory(beanFactory);
+        postProcessBeanFactory(beanFactory);
         //调用在上下文中注册为bean的工厂处理器
-        //invokeBeanFactoryPostProcessors(beanFactory);
+        invokeBeanFactoryPostProcessors(beanFactory);
         //注册拦截bean创建的bean处理器
-        //registerBeanPostProcessors(beanFactory);
+        registerBeanPostProcessors(beanFactory);
         //为上下文初始消息源
-        //initMessageSource();
+        initMessageSource();
         //为上下文初始事件多播
-        //initApplicationEventMulticaster();
+        initApplicationEventMulticaster();
         //初始化特定上下文子类中的其他特定bean
-        //onRefresh();
+        onRefresh();
         //检测监听器bean并注册它们
         //实例化所有剩余的非赖加载的单例
-        //finishBeanFactoryInitialization(beanFactory);
+        finishBeanFactoryInitialization(beanFactory);
         //发布相应事件
-        //finishRefresh();
+        finishRefresh();
     }
+
+
+
+    protected void prepareRefresh(){
+
+    }
+
 
     protected ConfigurableListableBeanFactory obtainFreshBeanFactory(){
         refreshBeanFactory();
         return getBeanFactory();
     }
 
+    protected abstract ConfigurableListableBeanFactory getBeanFactory();
     protected abstract void refreshBeanFactory();
 
-
-    protected abstract ConfigurableListableBeanFactory getBeanFactory();
-
-
-    protected void prepareRefresh(){
+    protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 
     }
+
+    protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+
+    }
+
+    protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory){
+
+    }
+
+    protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+
+
+    }
+
+    protected void initMessageSource(){
+
+    }
+
+    protected void initApplicationEventMulticaster(){
+
+    }
+
+    protected void onRefresh() {
+
+
+    }
+
+    protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
+
+    }
+
+    protected void finishRefresh() {
+
+    }
+
+
 }
