@@ -1,5 +1,6 @@
 package com.spring.context.support;
 
+import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.context.ConfigurableApplicationContext;
 import com.spring.core.env.ConfigurableEnvironment;
 import com.spring.core.io.DefaultResourceLoader;
@@ -17,9 +18,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     @Override
     public synchronized void refresh() {
         //准备上下文
-        //prepareRefresh();
+        prepareRefresh();
         //告诉子类去刷新内部bean工厂
-        //ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+        ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
         //准备bean工厂在上下文中使用
         //prepareBeanFactory(beanFactory);
         //允许在上下文子类中对bean工厂进行后处理
@@ -39,5 +40,20 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         //finishBeanFactoryInitialization(beanFactory);
         //发布相应事件
         //finishRefresh();
+    }
+
+    protected ConfigurableListableBeanFactory obtainFreshBeanFactory(){
+        refreshBeanFactory();
+        return getBeanFactory();
+    }
+
+    protected abstract void refreshBeanFactory();
+
+
+    protected abstract ConfigurableListableBeanFactory getBeanFactory();
+
+
+    protected void prepareRefresh(){
+
     }
 }
