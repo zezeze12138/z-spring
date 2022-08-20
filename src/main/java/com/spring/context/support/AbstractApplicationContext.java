@@ -45,7 +45,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
 
     /**
-     * 准备上下文
+     * 1.准备上下文
      * 创建一个Environment对象
      * systemProperties:保存Java环境变量的键值
      * systemEnvironment:保存了系统环境变量的键值
@@ -57,7 +57,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
 
     /**
-     * 创建BeanFactory
+     * 2.创建BeanFactory
      * 为beanFactory中的成员变量beanDefinitionMap进行初始化，该map的作用是保存BeanDefintion对象
      * BeanDefintion作为bean的设计蓝图，规定了bean的特征：例如单例、依赖关系、初始销毁方法
      * @return
@@ -70,8 +70,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     protected abstract ConfigurableListableBeanFactory getBeanFactory();
     protected abstract void refreshBeanFactory();
 
+    /**
+     * 3.准备BeanFactory
+     * 这一步完善BeanFactory，为其他各成员变量赋值
+     *
+     * @param beanFactory
+     */
     protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
-
+        //设置bean的类加载器
+        //设置支持表达式解析器
+        //添加beanProcessor：ApplicationContextAwareProcessor和ApplicationListenerDetector
+        //添加了不可被依赖的bean,例如Aware: EnvireonmentAware, ApplicationContextAware（这些接口的实现类不能通过类型来自动注入，所以需要在这里添加）
+        //向beanFactory中注册了spring框架的单例bean: environment, systemProperties等
+        //注册默认的环境bean
     }
 
     protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
