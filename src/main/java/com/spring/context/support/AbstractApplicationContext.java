@@ -56,6 +56,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     }
 
 
+    /**
+     * 创建BeanFactory
+     * 为beanFactory中的成员变量beanDefinitionMap进行初始化，该map的作用是保存BeanDefintion对象
+     * BeanDefintion作为bean的设计蓝图，规定了bean的特征：例如单例、依赖关系、初始销毁方法
+     * @return
+     */
     protected ConfigurableListableBeanFactory obtainFreshBeanFactory(){
         refreshBeanFactory();
         return getBeanFactory();
