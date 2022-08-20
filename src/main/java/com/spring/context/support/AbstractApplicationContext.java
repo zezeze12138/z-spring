@@ -93,7 +93,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     }
 
-
+    /**
+     * 5.执行BeanFactoryPostProcessor的后置处理方法
+     * beanFactoryProcessor作用是充当beanFactory的扩展点，可以添加或修改BeanDefintion
+     * 通过实现BeanFactoryPostProcessor接口可以自定义beanFactoryProcessor,当容器刷新执行到这个步骤会自动调用自定义的beanFactoryProcessor
+     * @param beanFactory
+     */
     protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory){
 
     }
