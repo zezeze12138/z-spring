@@ -103,6 +103,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     }
 
+    /**
+     * 6.初始化并注册所有的BeanPostProcessor
+     * 从BeanDefinitionMap中找出所有bean后置处理器，生成的BeanPostProcessor实例对象将保存到beanPostProcessor集合中
+     * BeanPostProcessor作用是充当bean的扩展点，它们会工作在bean的实例化、依赖注入、初始化阶段前后
+     * @param beanFactory
+     */
     protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 
 
