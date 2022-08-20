@@ -85,9 +85,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         //注册默认的环境bean
     }
 
+    /**
+     * 4.空实现，留给子类进行扩展
+     * @param beanFactory
+     */
     protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 
     }
+
 
     protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory){
 
