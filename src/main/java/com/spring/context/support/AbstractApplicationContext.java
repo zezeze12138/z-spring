@@ -147,6 +147,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     }
 
+    /**
+     * 11.初始化所有剩下的单实例bean
+     * 这一步会将beanFactory的成员补充完毕，并且初始化剩下的所有非懒加载单例bean
+     * @param beanFactory
+     */
     protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
 
     }
