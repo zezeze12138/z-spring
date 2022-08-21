@@ -156,8 +156,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     }
 
+    /**
+     * 12.完成BeanFactory的初始化创建工作；
+     */
     protected void finishRefresh() {
-
+        //初始化生命周期有关的后置处理器，BeanFactory创建完成后刷新相关的工作
+        //初始化LifecycleProcessor组件
+        //获取LifecycleProcessor组件
+        //发布容器刷新完成事件
     }
 
 
