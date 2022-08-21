@@ -122,8 +122,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     }
 
+    /**
+     * 8.初始化事件派发器
+     */
     protected void initApplicationEventMulticaster(){
-
+        //获取BeanFactory
+        //如果容器中是否有applicationEventMulticaster，如果有就获取，没有就创建
     }
 
     protected void onRefresh() {
