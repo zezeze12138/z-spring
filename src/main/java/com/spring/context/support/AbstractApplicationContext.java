@@ -130,6 +130,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         //如果容器中是否有applicationEventMulticaster，如果有就获取，没有就创建
     }
 
+    /**
+     * 9.空实现，留给子类进行扩展
+     */
     protected void onRefresh() {
 
 
