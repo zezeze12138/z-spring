@@ -114,6 +114,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     }
 
+    /**
+     * 7.初始化MessageSource组件
+     * 可做国际化功能；消息绑定，消息解析
+     */
     protected void initMessageSource(){
 
     }
