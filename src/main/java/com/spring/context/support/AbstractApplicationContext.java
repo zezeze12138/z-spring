@@ -138,6 +138,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     }
 
+    /**
+     * 10.将ApplicationListener注册到容器中
+     * 从多种途径中找到事件监听器对象，并添加到applicationEventMulticaster维护的集合当中
+     */
     private void registerListeners() {
 
 
