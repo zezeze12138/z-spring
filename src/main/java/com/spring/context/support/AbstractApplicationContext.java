@@ -1,12 +1,23 @@
 package com.spring.context.support;
 
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
+import com.spring.context.ApplicationEvent;
+import com.spring.context.ApplicationListener;
 import com.spring.context.ConfigurableApplicationContext;
 import com.spring.core.env.ConfigurableEnvironment;
 import com.spring.core.io.DefaultResourceLoader;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext{
 
+    //静态指定的监听器
+    private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
+    //在事件多播器初始化之前的事件
+    private Set<ApplicationListener<?>> earlyApplicationListeners;
+    //在事件多播器初始化之前发布的事件
+    private Set<ApplicationEvent> earlyApplicationEvents;
 
     public AbstractApplicationContext(ClassLoader classLoader) {
         super(classLoader);
@@ -52,6 +63,25 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
      * 自定义properSource:保存了配置文件中的键值
      */
     protected void prepareRefresh(){
+        //初始化一些属性设置，子类自定义个性化的属性设置方法
+        initPropertySources();
+        //校验配置文件的属性是否合法
+        getEnvironment().validateRequiredProperties();
+        //存储预刷新应用的监听器
+        if(this.earlyApplicationListeners == null){
+            this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners);
+        }else{
+            this.applicationListeners.clear();
+            this.applicationListeners.addAll(this.earlyApplicationListeners);
+        }
+        //初始化早期事件集合
+        this.earlyApplicationEvents = new LinkedHashSet<>();
+    }
+
+    /**
+     * 子类可个性化定义属性设置方法
+     */
+    protected void initPropertySources(){
 
     }
 

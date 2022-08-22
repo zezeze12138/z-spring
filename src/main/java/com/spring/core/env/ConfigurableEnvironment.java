@@ -2,7 +2,7 @@ package com.spring.core.env;
 
 import java.util.Map;
 
-public interface ConfigurableEnvironment extends Environment{
+public interface ConfigurableEnvironment extends Environment, ConfigurablePropertyResolver{
 
     void setActiveProfiles(String... profiles);
 

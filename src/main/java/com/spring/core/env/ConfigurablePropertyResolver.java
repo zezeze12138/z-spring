@@ -7,4 +7,5 @@ public interface ConfigurablePropertyResolver extends PropertyResolver{
 
     void setRequiredProperties(String... requiredProperties);
 
+    void validateRequiredProperties();
 }
