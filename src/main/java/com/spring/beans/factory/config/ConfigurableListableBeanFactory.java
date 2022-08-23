@@ -6,4 +6,17 @@ public interface ConfigurableListableBeanFactory extends ListableBeanFactory, Au
 
     BeanDefinition getBeanDefinition(String beanName);
 
+    /**
+     * 添加被忽略的依赖接口，例如Aware接口
+     * @param ifc
+     */
+    void ignoreDependencyInterface(Class<?> ifc);
+
+    /**
+     * 注注册可以解析的自动装配，例如BeanFactory接口
+     * @param dependencyType
+     * @param autowiredValue
+     */
+    void registerResolvableDependency(Class<?> dependencyType, Object autowiredValue);
+
 }
