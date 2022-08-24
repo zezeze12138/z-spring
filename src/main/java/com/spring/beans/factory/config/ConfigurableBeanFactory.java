@@ -1,6 +1,6 @@
 package com.spring.beans.factory.config;
 
-public interface ConfigurableBeanFactory {
+public interface ConfigurableBeanFactory extends SingletonBeanRegistry{
 
     String SCOPE_SINGLETON = "singleton";
 

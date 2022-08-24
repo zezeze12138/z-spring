@@ -1,11 +1,12 @@
 package com.spring.context.support;
 
+import com.spring.beans.factory.BeanFactory;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
-import com.spring.context.ApplicationEvent;
-import com.spring.context.ApplicationListener;
-import com.spring.context.ConfigurableApplicationContext;
+import com.spring.context.*;
 import com.spring.core.env.ConfigurableEnvironment;
+import com.spring.core.env.Environment;
 import com.spring.core.io.DefaultResourceLoader;
+import com.spring.core.io.ResourceLoader;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -108,11 +109,22 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
      */
     protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
         //设置bean的类加载器
+        beanFactory.setBeanClassLoader(getClassLoader());
         //设置支持表达式解析器
         //添加beanProcessor：ApplicationContextAwareProcessor和ApplicationListenerDetector
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
         //添加了不可被依赖的bean,例如Aware: EnvireonmentAware, ApplicationContextAware（这些接口的实现类不能通过类型来自动注入，所以需要在这里添加）
+        beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
+        //注册可以解析的自动装配
+        beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
+        beanFactory.registerResolvableDependency(ResourceLoader.class, this);
+        beanFactory.registerResolvableDependency(ApplicationContext.class, this);
         //向beanFactory中注册了spring框架的单例bean: environment, systemProperties等
+        beanFactory.registerSingleton("environment", getEnvironment());
+        beanFactory.registerSingleton("systemProperties", getEnvironment().getSystemProperties());
+        beanFactory.registerSingleton("systemEnvironment", getEnvironment().getSystemEnvironment());
         //注册默认的环境bean
+
     }
 
     /**
