@@ -148,7 +148,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
      * @param beanFactory
      */
     protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory){
-        //调用后置处理器注册器代理中的执行Bean工厂后置处理器方法
+        //调用后置处理器注册器委托中的执行Bean工厂后置处理器方法
         PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
     }
@@ -164,7 +164,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
      * @param beanFactory
      */
     protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
-
+        //调用后置处理器注册器委托中的注册Bean后置处理器方法
+        PostProcessorRegistrationDelegate.registerBeanPostProcessors(beanFactory, this);
 
     }
 
