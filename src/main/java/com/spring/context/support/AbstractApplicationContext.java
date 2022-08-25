@@ -1,6 +1,7 @@
 package com.spring.context.support;
 
 import com.spring.beans.factory.BeanFactory;
+import com.spring.beans.factory.config.BeanFactoryPostProcessor;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.context.*;
 import com.spring.core.env.ConfigurableEnvironment;
@@ -8,7 +9,9 @@ import com.spring.core.env.Environment;
 import com.spring.core.io.DefaultResourceLoader;
 import com.spring.core.io.ResourceLoader;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext{
@@ -19,6 +22,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     private Set<ApplicationListener<?>> earlyApplicationListeners;
     //在事件多播器初始化之前发布的事件
     private Set<ApplicationEvent> earlyApplicationEvents;
+    //Bean工厂的后置处理器列表
+    private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
+
 
     public AbstractApplicationContext(ClassLoader classLoader) {
         super(classLoader);
@@ -142,7 +148,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
      * @param beanFactory
      */
     protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory){
+        //调用后置处理器注册器代理中的执行Bean工厂后置处理器方法
+        PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
+    }
+
+    public List<BeanFactoryPostProcessor> getBeanFactoryPostProcessors(){
+        return this.beanFactoryPostProcessors;
     }
 
     /**
