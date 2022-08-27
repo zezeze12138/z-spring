@@ -4,6 +4,8 @@ import com.spring.beans.factory.BeanFactory;
 import com.spring.beans.factory.config.BeanFactoryPostProcessor;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.context.*;
+import com.spring.context.event.ApplicationEventMulticaster;
+import com.spring.context.event.SimpleApplicationEventMulticaster;
 import com.spring.core.env.ConfigurableEnvironment;
 import com.spring.core.env.Environment;
 import com.spring.core.io.DefaultResourceLoader;
@@ -27,6 +29,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
     //消息资源（国际化）
     private MessageSource messageSource;
+    //应用事件多播器
+    private ApplicationEventMulticaster applicationEventMulticaster;
 
     public AbstractApplicationContext(ClassLoader classLoader) {
         super(classLoader);
@@ -191,7 +195,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
      */
     protected void initApplicationEventMulticaster(){
         //获取BeanFactory
+        ConfigurableListableBeanFactory beanFactory = getBeanFactory();
         //如果容器中是否有applicationEventMulticaster，如果有就获取，没有就创建
+        if(beanFactory.containsLocalBean("applicationEventMulticaster")){
+            this.applicationEventMulticaster = beanFactory.getBean("applicationEventMulticaster", ApplicationEventMulticaster.class);
+        }else {
+            this.applicationEventMulticaster = new SimpleApplicationEventMulticaster(beanFactory);
+            beanFactory.registerSingleton("applicationEventMulticaster", this.applicationEventMulticaster);
+        }
     }
 
     /**
