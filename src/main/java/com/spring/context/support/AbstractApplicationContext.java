@@ -12,10 +12,7 @@ import com.spring.core.io.DefaultResourceLoader;
 import com.spring.core.io.ResourceLoader;
 import sun.plugin2.message.Message;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext{
 
@@ -205,6 +202,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         }
     }
 
+    ApplicationEventMulticaster getApplicationEventMulticaster(){
+        return this.applicationEventMulticaster;
+    }
+
     /**
      * 9.空实现，留给子类进行扩展
      */
@@ -218,8 +219,27 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
      * 从多种途径中找到事件监听器对象，并添加到applicationEventMulticaster维护的集合当中
      */
     private void registerListeners() {
+        //注册监听器
+        for(ApplicationListener<?> listener : getApplicationListeners()){
+            getApplicationEventMulticaster().addApplicationListener(listener);
+        }
+        //注册自定义的监听器
+        String[] listenerBeanNames = getBeanFactory().getBeanNamesForType(ApplicationListener.class, true, false);
+        for(String listenerBeanName :listenerBeanNames){
+            getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);
+        }
+        //早期的应用事件的广播
+        Set<ApplicationEvent> earlyEventToProcess = this.earlyApplicationEvents;
+        this.earlyApplicationEvents = null;
+        if(earlyEventToProcess != null){
+            for(ApplicationEvent earlyEvent : earlyEventToProcess){
+                getApplicationEventMulticaster().multicastEvent(earlyEvent);
+            }
+        }
+    }
 
-
+    public Collection<ApplicationListener<?>> getApplicationListeners(){
+        return this.applicationListeners;
     }
 
     /**
