@@ -8,6 +8,7 @@ import com.spring.core.env.ConfigurableEnvironment;
 import com.spring.core.env.Environment;
 import com.spring.core.io.DefaultResourceLoader;
 import com.spring.core.io.ResourceLoader;
+import sun.plugin2.message.Message;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -24,7 +25,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     private Set<ApplicationEvent> earlyApplicationEvents;
     //Bean工厂的后置处理器列表
     private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
-
+    //消息资源（国际化）
+    private MessageSource messageSource;
 
     public AbstractApplicationContext(ClassLoader classLoader) {
         super(classLoader);
@@ -174,7 +176,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
      * 可做国际化功能；消息绑定，消息解析
      */
     protected void initMessageSource(){
-
+        ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+        if(beanFactory.containsLocalBean("messageSource")){
+            this.messageSource = beanFactory.getBean("messageSource", MessageSource.class);
+        }else{
+            DelegatingMessageSource dms = new DelegatingMessageSource();
+            this.messageSource = dms;
+            beanFactory.registerSingleton("messageSource", this.messageSource);
+        }
     }
 
     /**
