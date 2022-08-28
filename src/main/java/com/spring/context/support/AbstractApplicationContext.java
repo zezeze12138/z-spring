@@ -6,6 +6,8 @@ import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.context.*;
 import com.spring.context.event.ApplicationEventMulticaster;
 import com.spring.context.event.SimpleApplicationEventMulticaster;
+import com.spring.context.weaving.LoadTimeWeaverAware;
+import com.spring.core.convert.ConversionService;
 import com.spring.core.env.ConfigurableEnvironment;
 import com.spring.core.env.Environment;
 import com.spring.core.io.DefaultResourceLoader;
@@ -248,7 +250,21 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
      * @param beanFactory
      */
     protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
-
+        //初始化属性填充转换服务
+        if(beanFactory.containsBean("conversionService")){
+            beanFactory.setConversionService(beanFactory.getBean("conversionService", ConversionService.class));
+        }
+        //初始化LoadTimeWeaverAware Bean，
+        String[] weaverAwareNames = beanFactory.getBeanNamesForType(LoadTimeWeaverAware.class, false, false);
+        for(String weaverAwareName : weaverAwareNames){
+            getBeanFactory().getBean(weaverAwareName);
+        }
+        //停止使用临时类加载器进行类型匹配
+        beanFactory.setTempClassLoader(null);
+        //允许缓存所有的Bean定义元数据,不可进一步的修改配置
+        beanFactory.freezeConfiguration();
+        //实例化所有剩余的非延迟初始化的单例
+        beanFactory.preInstantiateSingletons();
     }
 
     /**

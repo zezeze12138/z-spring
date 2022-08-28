@@ -1,6 +1,7 @@
 package com.spring.beans.factory.config;
 
 import com.spring.beans.factory.HierarchicalBeanFactory;
+import com.spring.core.convert.ConversionService;
 
 public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, SingletonBeanRegistry{
 
@@ -19,4 +20,16 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
      * @param beanPostProcessor
      */
     void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
+
+    /**
+     * 设置属性填充转换服务
+     * @param conversionService
+     */
+    void setConversionService(ConversionService conversionService);
+
+    /**
+     * 设置临时类加载器
+     * @param tempClassLoader
+     */
+    void setTempClassLoader(ClassLoader tempClassLoader);
 }

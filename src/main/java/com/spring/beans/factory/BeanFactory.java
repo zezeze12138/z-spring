@@ -21,4 +21,6 @@ public interface BeanFactory {
     <T> T getBean(String name, Class<T> requiredType);
 
     // TODO: 2022/8/14 下面还有其他获取bean的方法
+
+    boolean containsBean(String name);
 }

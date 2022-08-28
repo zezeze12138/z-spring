@@ -19,4 +19,13 @@ public interface ConfigurableListableBeanFactory extends ListableBeanFactory, Au
      */
     void registerResolvableDependency(Class<?> dependencyType, Object autowiredValue);
 
+    /**
+     * 冻结配置
+     */
+    void freezeConfiguration();
+
+    /**
+     * 实例化单例方法
+     */
+    void preInstantiateSingletons();
 }
