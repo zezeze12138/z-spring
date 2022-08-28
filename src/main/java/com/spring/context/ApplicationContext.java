@@ -5,7 +5,7 @@ import com.spring.core.env.EnvironmentCapable;
 /**
  * 应用上下文接口
  */
-public interface ApplicationContext extends EnvironmentCapable {
+public interface ApplicationContext extends EnvironmentCapable, ApplicationEventPublisher {
 
     String getId();
 

@@ -1,12 +1,16 @@
 package com.spring.core.io;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * 默认的资源加载器
  */
 public class DefaultResourceLoader implements ResourceLoader {
 
-
     private ClassLoader classLoader;
+
+    private final Map<Class<?>, Map<Resource, ?>> resourceCaches = new ConcurrentHashMap<>(4);
 
     public DefaultResourceLoader(ClassLoader classLoader) {
         this.classLoader = Thread.currentThread().getContextClassLoader();
@@ -21,5 +25,12 @@ public class DefaultResourceLoader implements ResourceLoader {
     @Override
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    /**
+     * 清除资源缓存
+     */
+    public void clearResourceCaches(){
+        this.resourceCaches.clear();
     }
 }
