@@ -1,9 +1,28 @@
 package com.spring.beans.factory.support;
 
+import com.spring.core.env.Environment;
 import com.spring.core.env.EnvironmentCapable;
+import com.spring.core.io.ResourceLoader;
+import com.spring.core.io.support.PathMatchingResourcePatternResolver;
 
 /**
  * 抽象的Bean定义读取器
  */
-public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRegistry, EnvironmentCapable{
+public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader, EnvironmentCapable{
+
+    private final BeanDefinitionRegistry registry;
+
+    private ResourceLoader resourceLoader;
+
+    private Environment environment;
+
+
+    protected AbstractBeanDefinitionReader(BeanDefinitionRegistry registry) {
+        this.registry = registry;
+        if(this.registry instanceof ResourceLoader){
+            this.resourceLoader = (ResourceLoader) this.registry;
+        }else {
+            this.resourceLoader = new PathMatchingResourcePatternResolver();
+        }
+    }
 }
