@@ -2,6 +2,7 @@ package com.spring.beans.factory.support;
 
 import com.spring.core.env.Environment;
 import com.spring.core.env.EnvironmentCapable;
+import com.spring.core.env.StandardEnvironment;
 import com.spring.core.io.ResourceLoader;
 import com.spring.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -19,10 +20,19 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 
     protected AbstractBeanDefinitionReader(BeanDefinitionRegistry registry) {
         this.registry = registry;
+        //创建路径匹配资源模式解析器
         if(this.registry instanceof ResourceLoader){
             this.resourceLoader = (ResourceLoader) this.registry;
         }else {
             this.resourceLoader = new PathMatchingResourcePatternResolver();
         }
+        //配置环境信息
+        if(this.registry instanceof EnvironmentCapable){
+            this.environment = ((EnvironmentCapable) this.registry).getEnvironment();
+        }else {
+            this.environment = new StandardEnvironment();
+        }
     }
+
+
 }
