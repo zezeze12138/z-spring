@@ -3,6 +3,7 @@ package com.spring.beans.factory.support;
 import com.spring.core.env.Environment;
 import com.spring.core.env.EnvironmentCapable;
 import com.spring.core.env.StandardEnvironment;
+import com.spring.core.io.Resource;
 import com.spring.core.io.ResourceLoader;
 import com.spring.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -34,5 +35,19 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
         }
     }
 
+    @Override
+    public BeanDefinitionRegistry getRegistry() {
+        return this.registry;
+    }
+
+    @Override
+    public int loadBeanDefintions(Resource resource) {
+        return 0;
+    }
+
+    @Override
+    public Environment getEnvironment() {
+        return this.environment;
+    }
 
 }
