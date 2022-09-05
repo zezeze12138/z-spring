@@ -58,9 +58,6 @@ public class DefaultListableBeanFactory implements ConfigurableListableBeanFacto
         }
     }
 
-    private Object getSingleton(String beanName) {
-        return null;
-    }
 
     @Override
     public String[] getBeanNamesForType(Class<?> type, boolean includeNonSingletons, boolean allowEagerInit) {
@@ -120,6 +117,11 @@ public class DefaultListableBeanFactory implements ConfigurableListableBeanFacto
     @Override
     public void registerSingleton(String beanName, Object singletonObject) {
 
+    }
+
+    @Override
+    public Object getSingleton(String beanName) {
+        return null;
     }
 
     @Override
