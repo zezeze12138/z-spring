@@ -4,10 +4,7 @@ import com.spring.beans.factory.ObjectFactory;
 import com.spring.beans.factory.config.SingletonBeanRegistry;
 import com.spring.core.SimpleAliasRegistry;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements SingletonBeanRegistry {
@@ -32,9 +29,28 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
      */
     private final Set<String> singletonCurrentlyInCreation = Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 
+    /**
+     * 已注册完成的单例bean
+     */
+    private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
+
     @Override
     public void registerSingleton(String beanName, Object singletonObject) {
+        synchronized (this.singletonObjects){
+            Object oldObject = this.singletonObjects.get(beanName);
+            if(oldObject == null){
+                addSingleton(beanName, singletonObject);
+            }
+        }
+    }
 
+    protected void addSingleton(String beanName, Object singletonObject) {
+        synchronized (this.singletonObjects){
+            this.singletonObjects.put(beanName, singletonObject);
+            this.singletonObjects.remove(beanName);
+            this.earlySingletonObjects.remove(beanName);
+            this.registeredSingletons.add(beanName);
+        }
     }
 
     @Override
