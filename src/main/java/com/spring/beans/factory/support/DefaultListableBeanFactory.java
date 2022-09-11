@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 默认列表的Bean工厂
  */
-public class DefaultListableBeanFactory implements ConfigurableListableBeanFactory, BeanDefinitionRegistry, Serializable{
+public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements ConfigurableListableBeanFactory, BeanDefinitionRegistry, Serializable{
 
     private volatile List<String> beanDefinitionsNames = new ArrayList<>(256);
 
@@ -118,8 +118,8 @@ public class DefaultListableBeanFactory implements ConfigurableListableBeanFacto
     }
 
     @Override
-    public boolean containsBean(String name) {
-        return false;
+    public boolean containsBean(String beanName) {
+        return this.beanDefinitionMap.containsKey(beanName);
     }
 
     @Override
