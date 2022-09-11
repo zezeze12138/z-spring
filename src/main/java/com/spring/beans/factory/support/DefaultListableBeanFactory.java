@@ -10,6 +10,8 @@ import com.spring.core.convert.ConversionService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 默认列表的Bean工厂
@@ -18,9 +20,15 @@ public class DefaultListableBeanFactory implements ConfigurableListableBeanFacto
 
     private volatile List<String> beanDefinitionsNames = new ArrayList<>(256);
 
+    private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
+
     @Override
     public BeanDefinition getBeanDefinition(String beanName) {
-        return null;
+        BeanDefinition bd = this.beanDefinitionMap.get(beanName);
+        if(bd == null){
+            throw new RuntimeException("未找到bean定义");
+        }
+        return bd;
     }
 
     @Override
