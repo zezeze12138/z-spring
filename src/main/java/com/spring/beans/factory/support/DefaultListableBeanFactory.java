@@ -72,10 +72,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         return new String[0];
     }
 
-    @Override
-    public <T> T createBean(Class<T> beanClass) {
-        return null;
-    }
+
 
     @Override
     public void setBeanClassLoader(ClassLoader beanClassLoader) {
