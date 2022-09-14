@@ -24,9 +24,13 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
     String getBeanClassName();
 
-    void getScope();
+    void setScope(String scope);
+
+    String getScope();
 
     void setLazyInit(boolean lazyInit);
+
+    boolean isLazyInit();
 
     boolean setDependsOn(String... dependsOn);
 
@@ -43,6 +47,14 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
     void setFactoryBeanName(String factoryBeanName);
 
     String getFactoryBeanName();
+
+    void setFactoryMethodName(String factoryMethodName);
+
+    String getFactoryMethodName();
+
+    void setRole(int role);
+
+    int getRole();
 
     boolean isSingleton();
 

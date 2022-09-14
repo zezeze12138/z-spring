@@ -7,6 +7,14 @@ import com.spring.core.AttributeAccessorSupport;
  */
 public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport  implements BeanMetadataElement{
 
+    private Object source;
 
+    public void setSource(Object source) {
+        this.source = source;
+    }
+
+    public Object getSource(){
+        return this.source;
+    }
 
 }
