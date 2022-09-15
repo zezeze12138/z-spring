@@ -23,10 +23,13 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
         setRole(original.getRole());
         setSource(original.getSource());
         copyAttributesFrom(original);
-    }
 
+    }
 
     public void setAbstract(boolean abstractFlag) {
         this.abstractFlag = abstractFlag;
     }
+
+
+    public abstract RootBeanDefinition cloneBeanDefinition();
 }

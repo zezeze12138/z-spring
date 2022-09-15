@@ -1,13 +1,14 @@
 package com.spring.beans.factory.support;
 
-import com.spring.beans.factory.BeanFactory;
-import com.spring.beans.factory.FactoryBean;
+import com.spring.beans.factory.*;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.core.convert.ConversionService;
 
 import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,47 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         }
         for (String beanName : beanNames) {
             Object singletonInstance = getSingleton(beanName);
+            RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+            if(!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()){
+                if(isFactoryBean(beanName)){
+                    Object bean = getBean("&"+beanName);
+                    if(bean instanceof FactoryBean){
+                        final FactoryBean<?> factory = (FactoryBean<?>) bean;
+                        boolean isEagerInit;
+                        if(System.getSecurityManager() != null && factory instanceof SmartFactoryBean){
+                            isEagerInit = AccessController.doPrivileged((PrivilegedAction<Boolean>)
+                                    ((SmartFactoryBean<?>) factory)::isEagerInit, getAccessControlContext());
+                        }else{
+                            isEagerInit = (factory instanceof SmartFactoryBean && ((SmartFactoryBean<?>)factory).isEagerInit());
+                        }
+                        if(isEagerInit){
+                            getBean(beanName);
+                        }
+                    }
+                }else {
+                    getBean(beanName);
+                }
+            }
         }
+
+        for(String beanName : beanNames){
+            Object singletonInstance = getSingleton(beanName);
+            if(singletonInstance instanceof SmartInitializingSingleton){
+                final SmartInitializingSingleton smartSingleton = (SmartInitializingSingleton) singletonInstance;
+                if(System.getSecurityManager() != null){
+                    AccessController.doPrivileged((PrivilegedAction<Object>) ()->{
+                        smartSingleton.afterSingletonsInstantiated();
+                        return null;
+                    }, getAccessControlContext());
+                }else {
+                    smartSingleton.afterSingletonsInstantiated();
+                }
+            }
+        }
+    }
+
+    private boolean isFactoryBean(String beanName) {
+        return false;
     }
 
 
