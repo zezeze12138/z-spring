@@ -2,15 +2,22 @@ package com.spring.context.support;
 
 import com.spring.beans.factory.config.ConfigurableListableBeanFactory;
 import com.spring.beans.factory.support.DefaultListableBeanFactory;
+import com.spring.context.ApplicationContext;
 
 public abstract class AbstractRefreshableApplicationContext extends AbstractApplicationContext{
 
     private DefaultListableBeanFactory beanFactory;
 
+    public AbstractRefreshableApplicationContext() {
+    }
+
     public AbstractRefreshableApplicationContext(ClassLoader classLoader) {
         super(classLoader);
     }
 
+    public AbstractRefreshableApplicationContext(ApplicationContext parent){
+        super(parent);
+    }
 
     @Override
     protected ConfigurableListableBeanFactory getBeanFactory() {

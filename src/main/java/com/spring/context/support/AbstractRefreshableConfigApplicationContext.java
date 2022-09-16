@@ -1,29 +1,43 @@
 package com.spring.context.support;
 
+import com.spring.beans.factory.BeanNameAware;
+import com.spring.beans.factory.InitializingBean;
+import com.spring.beans.factory.support.DefaultListableBeanFactory;
 import com.spring.context.ApplicationContext;
 import com.spring.core.env.ConfigurableEnvironment;
 
 import java.io.IOException;
 
-/**
- * 应用上下文
- */
-public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContext{
+public class AbstractRefreshableConfigApplicationContext extends AbstractRefreshableApplicationContext implements BeanNameAware, InitializingBean {
 
-    /**
-     * 通过资源文件路径获取应用上下文
-     * @param configLoacation
-     */
-    public ClassPathXmlApplicationContext(String configLoacation) {
-        this(new String[]{configLoacation}, true, null);
+    public AbstractRefreshableConfigApplicationContext() {
     }
 
-    public ClassPathXmlApplicationContext(String[] configLocations, boolean refresh, ApplicationContext parent){
-        super(parent);
-        setConfigLocations(configLocations);
-        if(refresh){
-            refresh();
-        }
+    public AbstractRefreshableConfigApplicationContext(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
+    public AbstractRefreshableConfigApplicationContext(ApplicationContext parent) {
+
+    }
+
+    protected String resolvePath(String path){
+        return null;
+    }
+
+    @Override
+    public void setBeanName(String name) {
+
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
+    }
+
+    @Override
+    protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) {
+
     }
 
     @Override

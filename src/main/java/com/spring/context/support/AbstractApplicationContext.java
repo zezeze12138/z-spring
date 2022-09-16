@@ -13,6 +13,8 @@ import com.spring.core.env.ConfigurableEnvironment;
 import com.spring.core.env.Environment;
 import com.spring.core.io.DefaultResourceLoader;
 import com.spring.core.io.ResourceLoader;
+import com.spring.core.io.ResourcePatternResolver;
+import com.spring.core.io.support.PathMatchingResourcePatternResolver;
 import sun.plugin2.message.Message;
 
 import java.util.*;
@@ -33,11 +35,23 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     private ApplicationEventMulticaster applicationEventMulticaster;
     //生命周期处理器
     private LifecycleProcessor lifecycleProcessor;
+    //資源匹配解析器
+    private ResourcePatternResolver resourcePatternResolver;
 
+
+    public AbstractApplicationContext() {
+        this.resourcePatternResolver = getResourcePatternResolver();
+    }
 
     public AbstractApplicationContext(ClassLoader classLoader) {
         super(classLoader);
     }
+
+    public AbstractApplicationContext(ApplicationContext parent) {
+        this();
+        setParent(parent);
+    }
+
 
     /**
      * 核心执行方法
@@ -313,5 +327,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     }
 
 
-
+    public ResourcePatternResolver getResourcePatternResolver() {
+        return new PathMatchingResourcePatternResolver(this);
+    }
 }

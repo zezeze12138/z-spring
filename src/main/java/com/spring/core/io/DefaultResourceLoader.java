@@ -12,6 +12,19 @@ public class DefaultResourceLoader implements ResourceLoader {
 
     private final Map<Class<?>, Map<Resource, ?>> resourceCaches = new ConcurrentHashMap<>(4);
 
+    public DefaultResourceLoader() {
+        ClassLoader c1 = null;
+        try{
+            c1 = Thread.currentThread().getContextClassLoader();
+        }catch (Throwable ex){
+
+        }
+        if(c1 == null){
+            c1 = ClassLoader.getSystemClassLoader();
+        }
+        this.classLoader = c1;
+    }
+
     public DefaultResourceLoader(ClassLoader classLoader) {
         this.classLoader = Thread.currentThread().getContextClassLoader();
     }

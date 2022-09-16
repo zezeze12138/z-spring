@@ -2,9 +2,17 @@ package com.spring.context.support;
 
 import com.spring.beans.factory.support.DefaultListableBeanFactory;
 import com.spring.beans.factory.xml.XmlBeanDefinitionReader;
+import com.spring.context.ApplicationContext;
 import com.spring.core.io.Resource;
 
-public abstract class AbstractXmlApplicationContext extends AbstractRefreshableApplicationContext{
+public abstract class AbstractXmlApplicationContext extends AbstractRefreshableConfigApplicationContext{
+
+    private String[] configLocations;
+
+    public AbstractXmlApplicationContext(ApplicationContext parent){
+        super(parent);
+    }
+
     public AbstractXmlApplicationContext(ClassLoader classLoader) {
         super(classLoader);
     }
@@ -22,6 +30,16 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableA
 
     }
 
+    public void setConfigLocations(String... locations){
+        if(locations != null){
+            this.configLocations = new String[locations.length];
+            for (int i = 0; i < locations.length; i++) {
+                this.configLocations[i] = resolvePath(locations[i].trim());
+            }
+        }else{
+            this.configLocations = null;
+        }
+    }
 
     protected void initBeanDefinitionReader(XmlBeanDefinitionReader reader){
 
