@@ -2,6 +2,7 @@ package com.spring.context.support;
 
 import com.spring.context.ApplicationContext;
 import com.spring.core.env.ConfigurableEnvironment;
+import com.spring.core.io.Resource;
 
 import java.io.IOException;
 
@@ -9,6 +10,8 @@ import java.io.IOException;
  * 应用上下文
  */
 public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContext{
+
+    private Resource[] configResources;
 
     /**
      * 通过资源文件路径获取应用上下文

@@ -21,5 +21,8 @@ public interface PropertyResolver {
 
     String getProperty(String key, String defaultValue);
 
+    String resolveRequiredPlaceholders(String text);
+
     // TODO: 2022/8/14 下面还有其他的获取属性方法
+
 }

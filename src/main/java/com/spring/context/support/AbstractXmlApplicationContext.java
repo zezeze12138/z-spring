@@ -9,6 +9,8 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 
     private String[] configLocations;
 
+    private boolean setIdCalled = false;
+
     public AbstractXmlApplicationContext(ApplicationContext parent){
         super(parent);
     }
@@ -30,16 +32,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 
     }
 
-    public void setConfigLocations(String... locations){
-        if(locations != null){
-            this.configLocations = new String[locations.length];
-            for (int i = 0; i < locations.length; i++) {
-                this.configLocations[i] = resolvePath(locations[i].trim());
-            }
-        }else{
-            this.configLocations = null;
-        }
-    }
+
 
     protected void initBeanDefinitionReader(XmlBeanDefinitionReader reader){
 
@@ -52,5 +45,17 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 
     private Resource[] getConfigResources() {
         return null;
+    }
+
+    @Override
+    public void setBeanName(String name) {
+        if(!this.setIdCalled){
+
+        }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        
     }
 }

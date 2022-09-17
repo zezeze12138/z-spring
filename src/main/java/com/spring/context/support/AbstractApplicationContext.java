@@ -11,6 +11,7 @@ import com.spring.context.weaving.LoadTimeWeaverAware;
 import com.spring.core.convert.ConversionService;
 import com.spring.core.env.ConfigurableEnvironment;
 import com.spring.core.env.Environment;
+import com.spring.core.env.StandardEnvironment;
 import com.spring.core.io.DefaultResourceLoader;
 import com.spring.core.io.ResourceLoader;
 import com.spring.core.io.ResourcePatternResolver;
@@ -35,8 +36,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     private ApplicationEventMulticaster applicationEventMulticaster;
     //生命周期处理器
     private LifecycleProcessor lifecycleProcessor;
-    //資源匹配解析器
+    //资源匹配解析器
     private ResourcePatternResolver resourcePatternResolver;
+    //配置环境信息
+    private ConfigurableEnvironment environment;
 
 
     public AbstractApplicationContext() {
@@ -329,5 +332,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     public ResourcePatternResolver getResourcePatternResolver() {
         return new PathMatchingResourcePatternResolver(this);
+    }
+
+    @Override
+    public ConfigurableEnvironment getEnvironment() {
+        if(this.environment == null){
+            this.environment = createEnvironment();
+        }
+        return this.environment;
+    }
+
+    private ConfigurableEnvironment createEnvironment() {
+        return new StandardEnvironment();
     }
 }
