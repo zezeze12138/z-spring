@@ -19,6 +19,7 @@ import com.spring.core.io.support.PathMatchingResourcePatternResolver;
 import sun.plugin2.message.Message;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext {
 
@@ -40,7 +41,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     private ResourcePatternResolver resourcePatternResolver;
     //配置环境信息
     private ConfigurableEnvironment environment;
-
+    //当前上下文的唯一id
+    private String id = this.getClass().getName()+"@"+ Integer.toHexString(System.identityHashCode(this));
+    //显示名称
+    private String displayName = this.getClass().getName()+"@"+ Integer.toHexString(System.identityHashCode(this));
+    //当前上下文是否正在活动的标识
+    private final AtomicBoolean active = new AtomicBoolean();
 
     public AbstractApplicationContext() {
         this.resourcePatternResolver = getResourcePatternResolver();
@@ -344,5 +350,24 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     private ConfigurableEnvironment createEnvironment() {
         return new StandardEnvironment();
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    public void setDisplayName(String displayName){
+        this.displayName = displayName;
+    }
+
+    @Override
+    public boolean isActive() {
+        return this.active.get();
     }
 }

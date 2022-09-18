@@ -22,6 +22,6 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 
     void refresh();
 
-
+    boolean isActive();
 
 }

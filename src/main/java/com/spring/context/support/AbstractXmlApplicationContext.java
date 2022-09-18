@@ -9,7 +9,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 
     private String[] configLocations;
 
-    private boolean setIdCalled = false;
+
 
     public AbstractXmlApplicationContext(ApplicationContext parent){
         super(parent);
@@ -47,15 +47,5 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
         return null;
     }
 
-    @Override
-    public void setBeanName(String name) {
-        if(!this.setIdCalled){
 
-        }
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        
-    }
 }

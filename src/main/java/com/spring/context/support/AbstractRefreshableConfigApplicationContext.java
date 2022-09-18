@@ -12,6 +12,8 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 
     private String[] configLocations;
 
+    private boolean setIdCalled = false;
+
     public AbstractRefreshableConfigApplicationContext() {
     }
 
@@ -38,4 +40,18 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
         return getEnvironment().resolveRequiredPlaceholders(path);
     }
 
+    @Override
+    public void setBeanName(String name) {
+        if(!this.setIdCalled){
+            super.setId(name);
+            setDisplayName("ApplicationContext '"+name+"'");
+        }
+    }
+
+    @Override
+    public void afterPropertiesSet(){
+        if(!isActive()){
+            refresh();
+        }
+    }
 }
