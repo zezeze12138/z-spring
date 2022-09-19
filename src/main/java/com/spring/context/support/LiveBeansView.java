@@ -32,7 +32,7 @@ public class LiveBeansView implements LiveBeanViewMBean, ApplicationContextAware
         String mbeanDomain = applicationContext.getEnvironment().getProperty("spring.liveBeansView.mbeanDomain");
         // TODO: 2022/8/28 下面功能还未实现
         if(mbeanDomain != null){
-            synchronized (applicationContext){
+            synchronized (applicationContexts){
                 if(applicationContexts.isEmpty()){
                     try {
                         MBeanServer server = ManagementFactory.getPlatformMBeanServer();
@@ -46,4 +46,24 @@ public class LiveBeansView implements LiveBeanViewMBean, ApplicationContextAware
             }
         }
     }
+
+    public static void unregisterApplicationContext(ConfigurableApplicationContext applicationContext){
+        synchronized (applicationContexts){
+            if(applicationContexts.remove(applicationContext) && applicationContexts.isEmpty()){
+                try{
+                    MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+                    String mbeanDomain = applicationContext.getEnvironment().getProperty("spring.liveBeansView.mbeanDomain");
+                    if(mbeanDomain != null){
+                        server.unregisterMBean(new ObjectName(mbeanDomain, "application", applicationName));
+                    }
+                }catch (Throwable ex){
+                    throw new RuntimeException("注销LiveBeansView MBean失败");
+                }finally {
+                    applicationName = null;
+                }
+            }
+        }
+    }
+
+
 }
