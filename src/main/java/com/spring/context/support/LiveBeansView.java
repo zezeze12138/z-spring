@@ -4,9 +4,19 @@ import com.spring.context.ApplicationContext;
 import com.spring.context.ApplicationContextAware;
 import com.spring.context.ConfigurableApplicationContext;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class LiveBeansView implements LiveBeanViewMBean, ApplicationContextAware {
 
     private ConfigurableApplicationContext applicationContext;
+
+    private static final Set<ConfigurableApplicationContext> applicationContexts = new LinkedHashSet<>();
+
+    private static String applicationName;
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -21,5 +31,19 @@ public class LiveBeansView implements LiveBeanViewMBean, ApplicationContextAware
     public static void registerApplicaitonContext(ConfigurableApplicationContext applicationContext){
         String mbeanDomain = applicationContext.getEnvironment().getProperty("spring.liveBeansView.mbeanDomain");
         // TODO: 2022/8/28 下面功能还未实现
+        if(mbeanDomain != null){
+            synchronized (applicationContext){
+                if(applicationContexts.isEmpty()){
+                    try {
+                        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+                        applicationName = applicationContext.getApplciationName();
+                        server.registerMBean(new LiveBeansView(), new ObjectName(mbeanDomain, "application", applicationName));
+                    }catch (Throwable ex){
+                        throw new RuntimeException("注册LiveBeansView MBean失败");
+                    }
+                }
+                applicationContexts.add(applicationContext);
+            }
+        }
     }
 }
