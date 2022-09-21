@@ -25,6 +25,14 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 
     }
 
+    protected String[] getConifgLocations(){
+        return (this.configLocations != null ? this.configLocations : getDefaultConfigLocations());
+    }
+
+    private String[] getDefaultConfigLocations() {
+        return null;
+    }
+
     public void setConfigLocations(String... locations){
         if(locations != null){
             this.configLocations = new String[locations.length];
@@ -54,4 +62,6 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
             refresh();
         }
     }
+
+
 }

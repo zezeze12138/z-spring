@@ -1,6 +1,7 @@
 package com.spring.core.io.support;
 
 import com.spring.context.support.AbstractApplicationContext;
+import com.spring.core.io.DefaultResourceLoader;
 import com.spring.core.io.Resource;
 import com.spring.core.io.ResourceLoader;
 import com.spring.core.io.ResourcePatternResolver;
@@ -11,6 +12,10 @@ import com.spring.core.io.ResourcePatternResolver;
 public class PathMatchingResourcePatternResolver implements ResourcePatternResolver {
 
     private final ResourceLoader resourceLoader;
+
+    public PathMatchingResourcePatternResolver() {
+        this.resourceLoader = new DefaultResourceLoader();
+    }
 
     public PathMatchingResourcePatternResolver(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;

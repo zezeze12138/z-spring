@@ -46,8 +46,35 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
     }
 
     @Override
+    public int loadBeanDefinitions(Resource... resources) {
+        int count = 0;
+        for (Resource resource : resources) {
+            count += loadBeanDefinitions(resource);
+        }
+        return count;
+    }
+
+    @Override
+    public int loadBeanDefinitions(String location) {
+        ResourceLoader resourceLoader = getResourceLoader();
+        if(resourceLoader == null){
+            throw new RuntimeException("该路径不能加载bean定义");
+        }
+        return 0;
+    }
+
+    @Override
+    public int loadBeanDefinitions(String... location) {
+        return 0;
+    }
+
+    @Override
     public Environment getEnvironment() {
         return this.environment;
     }
 
+    @Override
+    public ResourceLoader getResourceLoader() {
+        return resourceLoader;
+    }
 }

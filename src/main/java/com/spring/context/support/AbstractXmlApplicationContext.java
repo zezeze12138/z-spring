@@ -41,6 +41,14 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
     private void loadBeanDefinitions(XmlBeanDefinitionReader reader) {
         Resource[] configResources = getConfigResources();
         // TODO: 2022/8/31  调用reader中的loadBeanDefinitions方法
+        if(configResources != null){
+            reader.loadBeanDefinitions(configResources);
+        }
+        String[] configLocations = getConifgLocations();
+        if(configLocations != null){
+            reader.loadBeanDefinitions(configLocations);
+        }
+
     }
 
     private Resource[] getConfigResources() {
