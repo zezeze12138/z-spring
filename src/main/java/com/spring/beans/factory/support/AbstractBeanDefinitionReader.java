@@ -19,6 +19,7 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
     private Environment environment;
 
 
+
     protected AbstractBeanDefinitionReader(BeanDefinitionRegistry registry) {
         this.registry = registry;
         //创建路径匹配资源模式解析器
