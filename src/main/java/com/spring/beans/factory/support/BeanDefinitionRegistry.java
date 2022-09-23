@@ -20,4 +20,11 @@ public interface BeanDefinitionRegistry extends AliasRegistry{
      * @param beanName
      */
     void removeBeanDefinition(String beanName);
+
+    /**
+     * 是否包含Bean定义
+     * @param beanName
+     * @return
+     */
+    boolean containBeanDefintion(String beanName);
 }
