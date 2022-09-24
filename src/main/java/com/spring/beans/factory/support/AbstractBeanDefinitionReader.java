@@ -5,7 +5,11 @@ import com.spring.core.env.EnvironmentCapable;
 import com.spring.core.env.StandardEnvironment;
 import com.spring.core.io.Resource;
 import com.spring.core.io.ResourceLoader;
+import com.spring.core.io.ResourcePatternResolver;
 import com.spring.core.io.support.PathMatchingResourcePatternResolver;
+
+import javax.imageio.IIOException;
+import java.io.IOException;
 
 /**
  * 抽象的Bean定义读取器
@@ -61,12 +65,28 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
         if(resourceLoader == null){
             throw new RuntimeException("该路径不能加载bean定义");
         }
-        return 0;
+        if(resourceLoader instanceof ResourcePatternResolver){
+            try{
+                Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
+                int count = loadBeanDefinitions(resources);
+                return count;
+            }catch (Exception ex){
+                throw new RuntimeException("通过路径无法解析bean定义资源", ex);
+            }
+        }else {
+            Resource resource = resourceLoader.getResource(location);
+            int count = loadBeanDefinitions(resource);
+            return count;
+        }
     }
 
     @Override
-    public int loadBeanDefinitions(String... location) {
-        return 0;
+    public int loadBeanDefinitions(String... locations) {
+        int count = 0;
+        for(String location : locations){
+            count += loadBeanDefinitions(location);
+        }
+        return count;
     }
 
     @Override

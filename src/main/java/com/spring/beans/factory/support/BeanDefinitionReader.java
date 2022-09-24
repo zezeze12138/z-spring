@@ -32,5 +32,5 @@ public interface BeanDefinitionReader {
 
     int loadBeanDefinitions(String location);
 
-    int loadBeanDefinitions(String... location);
+    int loadBeanDefinitions(String... locations);
 }
