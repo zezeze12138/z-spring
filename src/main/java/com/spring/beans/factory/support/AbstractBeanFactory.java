@@ -3,12 +3,16 @@ package com.spring.beans.factory.support;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.ConfigurableBeanFactory;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory{
 
     private final Map<String, RootBeanDefinition> mergedBeanDefinitions = new ConcurrentHashMap<>(256);
+
+    private final Set<String> alreadyCreated = Collections.newSetFromMap(new ConcurrentHashMap<>(256));
 
     @Override
     public Object getBean(String name) {
@@ -59,4 +63,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     }
 
     protected abstract BeanDefinition getBeanDefinition(String beanName);
+
+    public boolean hasBeanCreationStarted(){
+        return !this.alreadyCreated.isEmpty();
+    }
 }

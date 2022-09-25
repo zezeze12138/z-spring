@@ -3,6 +3,10 @@ package com.spring.beans.factory.support;
 import com.spring.beans.BeanMetadataAttributeAccessor;
 import com.spring.beans.factory.config.BeanDefinition;
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * 抽象的Bean定义
  */
@@ -11,6 +15,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     private String scope = "";
 
     private boolean abstractFlag = false;
+
+    private volatile Object beanClass;
+
+
 
     public AbstractBeanDefinition(BeanDefinition original) {
         setParentName(original.getParentName());
@@ -32,4 +40,22 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 
     public abstract RootBeanDefinition cloneBeanDefinition();
+
+    public void validate(){
+        if(hasBeanClass()){
+            prepareMethodOverrides();
+        }
+    }
+
+    private void prepareMethodOverrides() {
+
+    }
+
+
+
+    public boolean hasBeanClass(){
+        return (this.beanClass instanceof Class);
+    }
+
+
 }

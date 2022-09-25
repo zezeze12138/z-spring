@@ -23,6 +23,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(256);
 
+    private volatile String[] frozenBeanDefinitionNames;
+
     @Override
     public BeanDefinition getBeanDefinition(String beanName) {
         BeanDefinition bd = this.beanDefinitionMap.get(beanName);
@@ -172,12 +174,59 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     @Override
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) {
+        if(beanDefinition instanceof AbstractBeanDefinition){
+            try{
+                ((AbstractBeanDefinition) beanDefinition).validate();
+            }catch (Exception e){
+                throw new RuntimeException("bean定义验证失败");
+            }
+        }
+
+        BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
+        if(existingDefinition != null){
+            if(existingDefinition.getRole() < beanDefinition.getRole()){
+
+            }else if(!beanDefinition.equals(existingDefinition)){
+
+            }else {
+
+            }
+            this.beanDefinitionMap.put(beanName, beanDefinition);
+        }else {
+            if(hasBeanCreationStarted()){
+                synchronized (this.beanDefinitionMap){
+                    this.beanDefinitionMap.put(beanName, beanDefinition);
+                    List<String> updateDefinitions = new ArrayList<>(this.beanDefinitionsNames.size() + 1);
+                    updateDefinitions.addAll(this.beanDefinitionsNames);
+                    updateDefinitions.add(beanName);
+                    this.beanDefinitionsNames = updateDefinitions;
+
+                }
+            }else {
+                this.beanDefinitionMap.put(beanName, beanDefinition);
+                this.beanDefinitionsNames.add(beanName);
+
+            }
+            this.frozenBeanDefinitionNames = null;
+        }
+
+        if(existingDefinition != null || containsSingleton(beanName)){
+            resetBeanDefinition(beanName);
+        }
+    }
+
+    private void resetBeanDefinition(String beanName) {
 
     }
 
     @Override
     public void removeBeanDefinition(String beanName) {
 
+    }
+
+    @Override
+    public boolean containBeanDefintion(String beanName) {
+        return false;
     }
 
     @Override

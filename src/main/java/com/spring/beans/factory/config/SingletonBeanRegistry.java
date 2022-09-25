@@ -18,4 +18,11 @@ public interface SingletonBeanRegistry {
      * @return
      */
     Object getSingleton(String beanName);
+
+    /**
+     * 是否包含单例
+     * @param beanName
+     * @return
+     */
+    boolean containsSingleton(String beanName);
 }

@@ -58,6 +58,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
         return getSingleton(beanName, true);
     }
 
+    @Override
+    public boolean containsSingleton(String beanName) {
+        return this.singletonObjects.containsKey(beanName);
+    }
+
     /**
      * 获取单例，三级缓存解决Bean循环依赖问题
      * @param beanName
