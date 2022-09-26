@@ -216,7 +216,24 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     }
 
     private void resetBeanDefinition(String beanName) {
+        clearMergedBeanDefinition(beanName);
+        //销毁单例
+        //destroySingletion(beanName);
 
+        for(BeanPostProcessor processor : getBeanPostProcessors()){
+            if(processor instanceof MergedBeanDefinitionPostProcessor){
+                ((MergedBeanDefinitionPostProcessor) processor).resetBeanDefinition(beanName);
+            }
+        }
+
+        for(String bdName : this.beanDefinitionsNames){
+            if(!beanName.equals(bdName)){
+                BeanDefinition bd = this.beanDefinitionMap.get(beanName);
+                if(bd != null && beanName.equals(bd.getParentName())){
+                    resetBeanDefinition(beanName);
+                }
+            }
+        }
     }
 
     @Override

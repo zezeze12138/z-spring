@@ -1,18 +1,23 @@
 package com.spring.beans.factory.support;
 
 import com.spring.beans.factory.config.BeanDefinition;
+import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.ConfigurableBeanFactory;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory{
 
     private final Map<String, RootBeanDefinition> mergedBeanDefinitions = new ConcurrentHashMap<>(256);
 
     private final Set<String> alreadyCreated = Collections.newSetFromMap(new ConcurrentHashMap<>(256));
+
+    private final List<BeanPostProcessor> beanPostProcessors = new CopyOnWriteArrayList<>();
 
     @Override
     public Object getBean(String name) {
@@ -66,5 +71,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     public boolean hasBeanCreationStarted(){
         return !this.alreadyCreated.isEmpty();
+    }
+
+    public void clearMergedBeanDefinition(String beanName){
+        this.mergedBeanDefinitions.remove(beanName);
+    }
+
+    public List<BeanPostProcessor> getBeanPostProcessors(){
+        return this.beanPostProcessors;
     }
 }
