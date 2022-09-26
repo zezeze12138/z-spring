@@ -218,7 +218,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     private void resetBeanDefinition(String beanName) {
         clearMergedBeanDefinition(beanName);
         //销毁单例
-        //destroySingletion(beanName);
+        destroySingleton(beanName);
 
         for(BeanPostProcessor processor : getBeanPostProcessors()){
             if(processor instanceof MergedBeanDefinitionPostProcessor){

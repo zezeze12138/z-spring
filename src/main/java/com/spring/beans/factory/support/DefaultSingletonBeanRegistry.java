@@ -1,5 +1,6 @@
 package com.spring.beans.factory.support;
 
+import com.spring.beans.factory.DisposableBean;
 import com.spring.beans.factory.ObjectFactory;
 import com.spring.beans.factory.config.SingletonBeanRegistry;
 import com.spring.core.SimpleAliasRegistry;
@@ -33,6 +34,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
      * 已注册完成的单例bean
      */
     private final Set<String> registeredSingletons = new LinkedHashSet<>(256);
+
+    /**
+     * 可销毁的beans
+     */
+    private final Map<String, Object> disposableBeans = new LinkedHashMap<>();
 
     @Override
     public void registerSingleton(String beanName, Object singletonObject) {
@@ -103,5 +109,36 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
      */
     public boolean isSingletonCurrentlyInCreation(String beanName){
         return this.singletonCurrentlyInCreation.contains(beanName);
+    }
+
+    /**
+     * 销毁单例
+     * @param beanName
+     */
+    public void destroySingleton(String beanName){
+        removeSingleton(beanName);
+
+        DisposableBean disposableBean;
+        synchronized (this.disposableBeans){
+            disposableBean = (DisposableBean) this.disposableBeans.remove(beanName);
+        }
+        destroyBean(beanName, disposableBean);
+    }
+
+    /**
+     * 移除单例
+     * @param beanName
+     */
+    public void removeSingleton(String beanName){
+        synchronized (this.singletonObjects){
+            this.singletonObjects.remove(beanName);
+            this.singletonFactories.remove(beanName);
+            this.earlySingletonObjects.remove(beanName);
+            this.registeredSingletons.remove(beanName);
+        }
+    }
+
+    public void destroyBean(String beanName, DisposableBean bean){
+
     }
 }
