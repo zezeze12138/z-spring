@@ -40,6 +40,21 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
      */
     private final Map<String, Object> disposableBeans = new LinkedHashMap<>();
 
+    /**
+     * 包含bean名称之间的映射，bean名称到bean包含的bean名称集
+     */
+    private final Map<String, Set<String>> containedBeanMap = new ConcurrentHashMap<>(16);
+
+    /**
+     * 依赖的bean名称之间映射，bean名称到依赖bean的名称集。
+     */
+    private final Map<String, Set<String>> dependentBeanMap = new ConcurrentHashMap<>(64);
+
+    /**
+     * 依赖的bean名称之间映射，bean名称到bean依赖项的bean名称集
+     */
+    private final Map<String, Set<String>> dependenciesForBeanMap = new ConcurrentHashMap<>(64);
+
     @Override
     public void registerSingleton(String beanName, Object singletonObject) {
         synchronized (this.singletonObjects){
@@ -138,7 +153,47 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
         }
     }
 
+    /**
+     * 销毁Bean
+     * @param beanName bean名称
+     * @param bean 可销毁的bean
+     */
     public void destroyBean(String beanName, DisposableBean bean){
+        Set<String> dependencies;
+        synchronized (this.dependentBeanMap){
+            dependencies = this.dependentBeanMap.remove(beanName);
+        }
+        if(dependencies != null){
+            for(String dependentBeanName : dependencies){
+                destroySingleton(dependentBeanName);
+            }
+        }
+        if(bean != null){
+            try{
+                bean.destroy();
+            }catch (Exception e){
 
+            }
+        }
+        Set<String> containedBeans;
+        synchronized (this.containedBeanMap){
+            containedBeans = this.containedBeanMap.remove(beanName);
+        }
+        if(containedBeans != null){
+            for(String containedBeanName : containedBeans){
+                destroySingleton(containedBeanName);
+            }
+        }
+        synchronized (this.dependentBeanMap){
+            for(Iterator<Map.Entry<String, Set<String>>> iterator = this.dependentBeanMap.entrySet().iterator(); iterator.hasNext();){
+                Map.Entry<String, Set<String>> entry = iterator.next();
+                Set<String> dependenciesToClean = entry.getValue();
+                dependenciesToClean.remove(beanName);
+                if(dependenciesToClean.isEmpty()){
+                    iterator.remove();
+                }
+            }
+        }
+        this.dependenciesForBeanMap.remove(beanName);
     }
 }
