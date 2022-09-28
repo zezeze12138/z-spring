@@ -25,6 +25,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     private volatile String[] frozenBeanDefinitionNames;
 
+    private final Map<Class<?>, Object> resolvableDependencies = new ConcurrentHashMap<>(16);
+
     @Override
     public BeanDefinition getBeanDefinition(String beanName) {
         BeanDefinition bd = this.beanDefinitionMap.get(beanName);
@@ -41,7 +43,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     @Override
     public void registerResolvableDependency(Class<?> dependencyType, Object autowiredValue) {
-
+        if(autowiredValue != null){
+            this.resolvableDependencies.put(dependencyType, autowiredValue);
+        }
     }
 
     @Override
@@ -164,6 +168,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     @Override
     public void registerSingleton(String beanName, Object singletonObject) {
+        super.registerSingleton(beanName, singletonObject);
 
     }
 
