@@ -238,7 +238,21 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     @Override
     public void removeBeanDefinition(String beanName) {
-
+        BeanDefinition bd = this.beanDefinitionMap.remove(beanName);
+        if(bd == null){
+            throw new RuntimeException("未找到beanName为："+beanName+"的bean定义");
+        }
+        if(hasBeanCreationStarted()){
+            synchronized (this.beanDefinitionMap){
+                List<String> updatedDefinitions = new ArrayList<>(this.beanDefinitionsNames);
+                updatedDefinitions.remove(beanName);
+                this.beanDefinitionsNames = updatedDefinitions;
+            }
+        }else{
+            this.beanDefinitionsNames.remove(beanName);
+        }
+        this.frozenBeanDefinitionNames = null;
+        resetBeanDefinition(beanName);
     }
 
     @Override
