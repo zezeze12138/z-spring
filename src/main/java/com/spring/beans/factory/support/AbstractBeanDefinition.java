@@ -34,6 +34,14 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     }
 
+    public AbstractBeanDefinition() {
+        this(null, null);
+    }
+
+    // TODO: 2022/9/30 这里还要完善
+    public AbstractBeanDefinition(Object o, Object o1) {
+    }
+
     public void setAbstract(boolean abstractFlag) {
         this.abstractFlag = abstractFlag;
     }
@@ -63,5 +71,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
         return (this.beanClass instanceof Class);
     }
 
-
+    public void setBeanClass(Class<?> beanClass){
+        this.beanClass = beanClass;
+    }
 }

@@ -18,7 +18,7 @@ public interface BeanFactory {
     Object getBean(String name);
 
 
-    <T> T getBean(String name, Class<T> requiredType);
+    <T> Object getBean(String name, Class<T> requiredType);
 
     // TODO: 2022/8/14 下面还有其他获取bean的方法
 

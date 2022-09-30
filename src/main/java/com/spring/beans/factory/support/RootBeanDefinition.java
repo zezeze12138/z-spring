@@ -12,6 +12,11 @@ public class RootBeanDefinition extends AbstractBeanDefinition{
         super(original);
     }
 
+    public <T> RootBeanDefinition(Class<T> beanClass) {
+        super();
+        setBeanClass(beanClass);
+    }
+
     @Override
     public RootBeanDefinition cloneBeanDefinition() {
         return null;

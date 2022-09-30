@@ -158,6 +158,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     @Override
     public <T> T getBean(String name, Class<T> requiredType) {
+        //return getBean(requiredType, (Object[]) null);
         return null;
     }
 
@@ -172,10 +173,6 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     }
 
-    @Override
-    public Object getSingleton(String beanName) {
-        return null;
-    }
 
     @Override
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) {

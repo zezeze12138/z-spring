@@ -7,6 +7,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     @Override
     public <T> T createBean(Class<T> beanClass) {
+        RootBeanDefinition bd = new RootBeanDefinition(beanClass);
+        bd.setScope("prototype");
+
         return null;
     }
 }
