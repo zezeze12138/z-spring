@@ -1,7 +1,9 @@
 package com.spring.beans.factory.support;
 
 import com.spring.beans.BeanMetadataAttributeAccessor;
+import com.spring.beans.MutablePropertyValues;
 import com.spring.beans.factory.config.BeanDefinition;
+import com.spring.beans.factory.config.ConstructorArgumentValues;
 
 import java.util.Collections;
 import java.util.Set;
@@ -18,6 +20,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     private volatile Object beanClass;
 
+    private ConstructorArgumentValues constructorArgumentValues;
+
+    private MutablePropertyValues propertyValues;
 
 
     public AbstractBeanDefinition(BeanDefinition original) {
@@ -38,8 +43,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
         this(null, null);
     }
 
-    // TODO: 2022/9/30 这里还要完善
-    public AbstractBeanDefinition(Object o, Object o1) {
+    public AbstractBeanDefinition(ConstructorArgumentValues cargs, MutablePropertyValues pvs) {
+        this.constructorArgumentValues = cargs;
+        this.propertyValues = pvs;
     }
 
     public void setAbstract(boolean abstractFlag) {
