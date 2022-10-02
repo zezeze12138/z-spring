@@ -36,7 +36,24 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
         setRole(original.getRole());
         setSource(original.getSource());
         copyAttributesFrom(original);
+        if(original instanceof AbstractBeanDefinition){
+            AbstractBeanDefinition originalAbd = (AbstractBeanDefinition) original;
+            if(originalAbd.hasBeanClass()){
+                setBeanClass(originalAbd.getBeanClass());
+            }
+        }
 
+    }
+
+    private Class<?> getBeanClass() {
+        Object beanClassObject =  this.beanClass;
+        if(beanClassObject == null){
+            throw new RuntimeException("bean定义中没有明确的beanClass");
+        }
+        if(!(beanClassObject instanceof Class)){
+            throw new RuntimeException("Bean类名["+beanClassObject+"]尚未解析为实际的类");
+        }
+        return (Class<?>) beanClassObject;
     }
 
     public AbstractBeanDefinition() {
