@@ -42,6 +42,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
                 setBeanClass(originalAbd.getBeanClass());
             }
         }
+        setDependsOn(original.getDependsOn());
 
     }
 
