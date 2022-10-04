@@ -6,6 +6,8 @@ import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.ConstructorArgumentValues;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,6 +26,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     private MutablePropertyValues propertyValues;
 
+    private final Map<String, AutowireCandidateQualifier> qualifiers = new LinkedHashMap<>();
 
     public AbstractBeanDefinition(BeanDefinition original) {
         setParentName(original.getParentName());
@@ -43,7 +46,12 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
             }
         }
         setDependsOn(original.getDependsOn());
+        setPrimary(original.isPrimary());
+        copyQualifiersFrom((AbstractBeanDefinition) original);
+    }
 
+    protected void copyQualifiersFrom(AbstractBeanDefinition original){
+        this.qualifiers.putAll(original.qualifiers);
     }
 
     private Class<?> getBeanClass() {
