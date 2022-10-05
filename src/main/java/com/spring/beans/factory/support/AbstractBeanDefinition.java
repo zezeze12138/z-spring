@@ -4,6 +4,7 @@ import com.spring.beans.BeanMetadataAttributeAccessor;
 import com.spring.beans.MutablePropertyValues;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.ConstructorArgumentValues;
+import com.spring.core.io.Resource;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -28,6 +29,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     private final Map<String, AutowireCandidateQualifier> qualifiers = new LinkedHashMap<>();
 
+    private Resource resource;
+
     public AbstractBeanDefinition(BeanDefinition original) {
         setParentName(original.getParentName());
         setBeanClassName(original.getBeanClassName());
@@ -44,10 +47,20 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
             if(originalAbd.hasBeanClass()){
                 setBeanClass(originalAbd.getBeanClass());
             }
+            setDependsOn(originalAbd.getDependsOn());
+            setPrimary(originalAbd.isPrimary());
+            copyQualifiersFrom(originalAbd);
+            setResource(originalAbd.getResource());
         }
-        setDependsOn(original.getDependsOn());
-        setPrimary(original.isPrimary());
-        copyQualifiersFrom((AbstractBeanDefinition) original);
+
+    }
+
+    public void setResource(Resource resource){
+        this.resource = resource;
+    }
+
+    public Resource getResource(){
+        return this.resource;
     }
 
     protected void copyQualifiersFrom(AbstractBeanDefinition original){
