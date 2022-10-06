@@ -10,6 +10,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         RootBeanDefinition bd = new RootBeanDefinition(beanClass);
         bd.setScope("prototype");
 
+        return (T) createBean(beanClass.getName(), bd, null);
+    }
+
+    private Object createBean(String beanName, RootBeanDefinition mbd, Object[] args){
+        RootBeanDefinition mbdToUse = mbd;
         return null;
     }
 }
