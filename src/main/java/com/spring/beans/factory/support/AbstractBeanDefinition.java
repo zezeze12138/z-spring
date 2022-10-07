@@ -100,7 +100,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
         }
     }
 
-    private void prepareMethodOverrides() {
+    protected void prepareMethodOverrides() {
         if(hasMethodOverrides()){
 
         }

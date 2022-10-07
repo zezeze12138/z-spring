@@ -67,6 +67,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
         }
     }
 
+    protected Class<?> resolveBeanClass(final RootBeanDefinition mbd, String beanName, final Class<?>... typesToMatch){
+        return null;
+    }
+
     protected abstract BeanDefinition getBeanDefinition(String beanName);
 
     public boolean hasBeanCreationStarted(){
