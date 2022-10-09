@@ -7,6 +7,9 @@ import com.spring.beans.factory.config.BeanDefinition;
  */
 public class RootBeanDefinition extends AbstractBeanDefinition{
 
+    final Object postProcessingLock = new Object();
+
+    boolean postProcessed = false;
 
     public RootBeanDefinition(BeanDefinition original) {
         super(original);

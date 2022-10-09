@@ -2,6 +2,7 @@ package com.spring.beans.factory.support;
 
 import com.spring.beans.BeanWrapper;
 import com.spring.beans.factory.config.AutowireCapableBeanFactory;
+import com.spring.beans.factory.config.BeanPostProcessor;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -48,7 +49,26 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
         final Object bean = instanceWrapper.getWrappedInstance();
         Class<?> beanType = instanceWrapper.getWrappedClass();
+        synchronized (mbd.postProcessingLock){
+            if(!mbd.postProcessed){
+                try{
+                    applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
+                }catch (Throwable ex){
+                    throw new RuntimeException(ex);
+                }
+                mbd.postProcessed = true;
+            }
+        }
         return null;
+    }
+
+    protected void applyMergedBeanDefinitionPostProcessors(RootBeanDefinition mbd, Class<?> beanType, String beanName){
+        for(BeanPostProcessor bp : getBeanPostProcessors()){
+            if(bp instanceof MergedBeanDefinitionPostProcessor){
+                MergedBeanDefinitionPostProcessor bdp = (MergedBeanDefinitionPostProcessor) bp;
+                bdp.postProcessMergedBeanDefinition(mbd, beanType, beanName);
+            }
+        }
     }
 
     private BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, Object[] args) {
