@@ -31,6 +31,16 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     private Resource resource;
 
+    private boolean synthetic = false;
+
+    public boolean isSynthetic() {
+        return synthetic;
+    }
+
+    public void setSynthetic(boolean synthetic) {
+        this.synthetic = synthetic;
+    }
+
     public AbstractBeanDefinition(BeanDefinition original) {
         setParentName(original.getParentName());
         setBeanClassName(original.getBeanClassName());
@@ -109,7 +119,6 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     protected boolean hasMethodOverrides(){
         return false;
     }
-
 
 
     public boolean hasBeanClass(){

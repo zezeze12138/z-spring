@@ -3,6 +3,7 @@ package com.spring.beans.factory.support;
 import com.spring.beans.BeanWrapper;
 import com.spring.beans.factory.config.AutowireCapableBeanFactory;
 import com.spring.beans.factory.config.BeanPostProcessor;
+import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -59,7 +60,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 mbd.postProcessed = true;
             }
         }
+        boolean earlySingletonExposure = (mbd.isSingleton());
+        if(earlySingletonExposure){
+            addSingletonFactory(beanName, ()->getEarlyBeanReference(beanName, mbd, bean));
+        }
         return null;
+    }
+
+    private Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) {
+        Object exposedObject = bean;
+        if(!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors())
+        for(BeanPostProcessor bp : getBeanPostProcessors()){
+            if(bp instanceof SmartInstantiationAwareBeanPostProcessor){
+                SmartInstantiationAwareBeanPostProcessor ibp = (SmartInstantiationAwareBeanPostProcessor) bp;
+                exposedObject = ibp.getEarlyBeanReference(exposedObject, beanName);
+            }
+        }
+        return exposedObject;
     }
 
     protected void applyMergedBeanDefinitionPostProcessors(RootBeanDefinition mbd, Class<?> beanType, String beanName){

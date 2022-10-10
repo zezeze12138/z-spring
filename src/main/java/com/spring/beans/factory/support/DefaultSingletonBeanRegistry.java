@@ -84,6 +84,16 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
         return this.singletonObjects.containsKey(beanName);
     }
 
+    protected void addSingletonFactory(String beanName, ObjectFactory<?> singletonFactory){
+        synchronized (this.singletonObjects){
+            if(!this.singletonFactories.containsKey(beanName)){
+                this.singletonFactories.put(beanName, singletonFactory);
+                this.earlySingletonObjects.remove(beanName);
+                this.registeredSingletons.add(beanName);
+            }
+        }
+    }
+
     /**
      * 获取单例，三级缓存解决Bean循环依赖问题
      * @param beanName

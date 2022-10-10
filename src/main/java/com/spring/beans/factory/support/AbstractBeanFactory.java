@@ -19,6 +19,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     private final List<BeanPostProcessor> beanPostProcessors = new CopyOnWriteArrayList<>();
 
+    private volatile boolean hasInstantiationAwareBeanPostProcessors;
+
     @Override
     public Object getBean(String name) {
         return null;
@@ -83,5 +85,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     public List<BeanPostProcessor> getBeanPostProcessors(){
         return this.beanPostProcessors;
+    }
+
+    protected boolean hasInstantiationAwareBeanPostProcessors() {
+        return this.hasInstantiationAwareBeanPostProcessors;
     }
 }
