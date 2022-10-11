@@ -64,7 +64,19 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         if(earlySingletonExposure){
             addSingletonFactory(beanName, ()->getEarlyBeanReference(beanName, mbd, bean));
         }
+        Object exposedObject = bean;
+        populateBean(beanName, mbd, instanceWrapper);
         return null;
+    }
+
+    private void populateBean(String beanName, RootBeanDefinition mbd, BeanWrapper instanceWrapper) {
+        if(instanceWrapper == null){
+            if(mbd.hasPropertyValues()){
+                throw new RuntimeException("空实例不能获取到属性值");
+            }else {
+                return;
+            }
+        }
     }
 
     private Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) {

@@ -1,6 +1,7 @@
 package com.spring.beans.factory.config;
 
 import com.spring.beans.BeanMetadataElement;
+import com.spring.beans.MutablePropertyValues;
 import com.spring.core.AttributeAccessor;
 import sun.reflect.ConstructorAccessor;
 
@@ -64,4 +65,9 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
     BeanDefinition getOriginatingBeanDefinition();
 
+    MutablePropertyValues getPropertyValues();
+
+    default boolean hasPropertyValues(){
+        return !getPropertyValues().isEmpty();
+    }
 }
