@@ -1,10 +1,13 @@
 package com.spring.beans.factory.support;
 
 import com.spring.beans.BeanWrapper;
+import com.spring.beans.factory.ObjectFactory;
 import com.spring.beans.factory.config.AutowireCapableBeanFactory;
 import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -65,8 +68,61 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             addSingletonFactory(beanName, ()->getEarlyBeanReference(beanName, mbd, bean));
         }
         Object exposedObject = bean;
-        populateBean(beanName, mbd, instanceWrapper);
+        try{
+            populateBean(beanName, mbd, instanceWrapper);
+            exposedObject = initializedBean(beanName, exposedObject, mbd);
+        }catch (Exception e){
+            throw new RuntimeException("初始化bean失败");
+        }
         return null;
+    }
+
+    private Object initializedBean(String beanName, final Object bean, RootBeanDefinition mbd) {
+        if(System.getSecurityManager() != null){
+            AccessController.doPrivileged((PrivilegedAction<Object>) () ->{
+                invokeAwareMethods(beanName, bean);
+                return null;
+            }, getAccessControlContext());
+        }else {
+            invokeAwareMethods(beanName, bean);
+        }
+        Object wrappedBean = bean;
+        if(mbd == null || !mbd.isSynthetic()){
+            wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
+        }
+        try{
+            invokeInitMethods(beanName, wrappedBean, mbd);
+        }catch (Exception e){
+            throw new RuntimeException("调用初始化方法失败");
+        }
+        if(mbd == null || !mbd.isSynthetic()){
+            wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
+        }
+        return wrappedBean;
+    }
+
+    private Object applyBeanPostProcessorsAfterInitialization(Object wrappedBean, String beanName) {
+        return null;
+    }
+
+    private void invokeInitMethods(String beanName, Object wrappedBean, RootBeanDefinition mbd) {
+
+    }
+
+    protected  Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName){
+        Object result = existingBean;
+        for (BeanPostProcessor postProcessor : getBeanPostProcessors()) {
+            Object current = postProcessor.postProcessBeforeInitialization(result, beanName);
+            if(current == null){
+                return result;
+            }
+            result = current;
+        }
+        return result;
+    }
+
+    private void invokeAwareMethods(final String beanName, final Object bean) {
+
     }
 
     private void populateBean(String beanName, RootBeanDefinition mbd, BeanWrapper instanceWrapper) {
