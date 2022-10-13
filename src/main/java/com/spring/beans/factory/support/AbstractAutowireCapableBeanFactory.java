@@ -101,8 +101,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return wrappedBean;
     }
 
-    private Object applyBeanPostProcessorsAfterInitialization(Object wrappedBean, String beanName) {
-        return null;
+    private Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) {
+        Object result = existingBean;
+        for (BeanPostProcessor postProcessor : getBeanPostProcessors()) {
+            Object current = postProcessor.postProcessAfterInitialization(result, beanName);
+            if(current == null){
+                return result;
+            }
+            result = current;
+        }
+        return result;
     }
 
     private void invokeInitMethods(String beanName, Object wrappedBean, RootBeanDefinition mbd) {
