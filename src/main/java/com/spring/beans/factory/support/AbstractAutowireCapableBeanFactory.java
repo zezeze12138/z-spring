@@ -8,6 +8,7 @@ import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import com.sun.xml.internal.ws.util.StringUtils;
 
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -151,6 +152,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     private void invokeCustomInitMethod(String beanName, Object bean, RootBeanDefinition mbd) {
+        String initMethodName = mbd.getInitMethodName();
 
     }
 
