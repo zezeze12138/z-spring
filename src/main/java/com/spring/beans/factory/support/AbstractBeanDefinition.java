@@ -33,6 +33,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     private boolean synthetic = false;
 
+    private String initMehodName;
+
     public boolean isSynthetic() {
         return synthetic;
     }
@@ -127,5 +129,20 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     public void setBeanClass(Class<?> beanClass){
         this.beanClass = beanClass;
+    }
+
+    @Override
+    public BeanDefinition getOriginatingBeanDefinition() {
+        return null;
+    }
+
+    @Override
+    public MutablePropertyValues getPropertyValues() {
+        return null;
+    }
+
+    @Override
+    public String getInitMethodName() {
+        return this.initMehodName;
     }
 }

@@ -53,6 +53,10 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
     String getFactoryMethodName();
 
+    void setInitMehodName(String initMehodName);
+
+    String getInitMethodName();
+
     void setRole(int role);
 
     int getRole();

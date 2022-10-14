@@ -1,13 +1,17 @@
 package com.spring.beans.factory.support;
 
 import com.spring.beans.BeanWrapper;
+import com.spring.beans.factory.InitializingBean;
 import com.spring.beans.factory.ObjectFactory;
 import com.spring.beans.factory.config.AutowireCapableBeanFactory;
 import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
+import com.sun.xml.internal.ws.util.StringUtils;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -113,7 +117,40 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return result;
     }
 
-    private void invokeInitMethods(String beanName, Object wrappedBean, RootBeanDefinition mbd) {
+    private void invokeInitMethods(String beanName, final Object bean, RootBeanDefinition mbd) {
+        boolean isInitializingBean = (bean instanceof InitializingBean);
+        if(isInitializingBean && (mbd == null || !mbd.isExternallyManagedInitMethod("afterPropertiesSet"))){
+            if(System.getSecurityManager() != null){
+                try {
+                    AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () ->{
+                        ((InitializingBean) bean).afterPropertiesSet();
+                        return null;
+                    }, getAccessControlContext());
+                } catch (PrivilegedActionException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            }else {
+                try {
+                    ((InitializingBean) bean).afterPropertiesSet();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("初始化bean,afterPropertiesSet方法执行异常");
+                }
+            }
+        }
+        if(mbd != null && bean.getClass() != NullBean.class){
+            String initMethodName = mbd.getInitMethodName();
+            if((initMethodName != null && !initMethodName.isEmpty()) &&
+            !(isInitializingBean && "afterPropertiesSet".equals(initMethodName)) &&
+            !mbd.isExternallyManagedInitMethod(initMethodName)){
+
+                invokeCustomInitMethod(beanName, bean, mbd);
+            }
+        }
+    }
+
+    private void invokeCustomInitMethod(String beanName, Object bean, RootBeanDefinition mbd) {
 
     }
 

@@ -1,6 +1,9 @@
 package com.spring.beans.factory.support;
 
+import com.spring.beans.MutablePropertyValues;
 import com.spring.beans.factory.config.BeanDefinition;
+
+import java.util.Set;
 
 /**
  * 根bean定义
@@ -10,6 +13,8 @@ public class RootBeanDefinition extends AbstractBeanDefinition{
     final Object postProcessingLock = new Object();
 
     boolean postProcessed = false;
+
+    private Set<String> externallyManagedInitMethods;
 
     public RootBeanDefinition(BeanDefinition original) {
         super(original);
@@ -140,8 +145,18 @@ public class RootBeanDefinition extends AbstractBeanDefinition{
         return false;
     }
 
+
+
+
     @Override
-    public BeanDefinition getOriginatingBeanDefinition() {
-        return null;
+    public boolean hasPropertyValues() {
+        return false;
+    }
+
+    public boolean isExternallyManagedInitMethod(String initMethod){
+        synchronized (this.postProcessingLock){
+            return (this.externallyManagedInitMethods != null &&
+            this.externallyManagedInitMethods.contains(initMethod));
+        }
     }
 }
