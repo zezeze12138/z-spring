@@ -9,10 +9,13 @@ import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import com.sun.xml.internal.ws.util.StringUtils;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -153,7 +156,65 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     private void invokeCustomInitMethod(String beanName, Object bean, RootBeanDefinition mbd) {
         String initMethodName = mbd.getInitMethodName();
+        try {
+            Method initMethod = (mbd.isNonPublicAccessAllowed() ?
+                    beanName.getClass().getMethod(initMethodName, null) :
+                    getMethodIfAvailable(bean.getClass(), initMethodName));
+            if(initMethod == null){
+                if(mbd.isEnforceInitMethod()){
+                    throw new RuntimeException("未发现初始化方法名称");
+                }else {
+                    return;
+                }
+            }
 
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private Method getMethodIfAvailable(Class<?> clazz, String methodName, Class<?>... paramTypes){
+        if(paramTypes != null){
+            try{
+                return clazz.getMethod(methodName, paramTypes);
+            } catch (NoSuchMethodException e) {
+                return null;
+            }
+        }else{
+            Set<Method> candidates = new HashSet<>(1);
+            Method[] methods = clazz.getMethods();
+            for (Method method : methods) {
+                if(methodName.equals(method.getName())){
+                    candidates.add(method);
+                }
+            }
+            if(candidates.size() == 1){
+                return candidates.iterator().next();
+            }
+            return null;
+        }
+    }
+
+    private Method getInterfaceMethodIfPossible(Method method){
+        if(!Modifier.isPublic(method.getModifiers()) || method.getDeclaringClass().isInterface()){
+            return method;
+        }
+        Class<?> current = method.getDeclaringClass();
+        while(current != null && current != Object.class){
+            Class<?>[] ifcs = current.getInterfaces();
+            for (Class<?> ifc : ifcs) {
+                try{
+                    return ifc.getMethod(method.getName(), method.getParameterTypes());
+                }catch (NoSuchMethodException e){
+
+                }
+
+            }
+            current = current.getSuperclass();
+        }
+        return method;
     }
 
     protected  Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName){

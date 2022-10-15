@@ -74,4 +74,6 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
     default boolean hasPropertyValues(){
         return !getPropertyValues().isEmpty();
     }
+
+
 }

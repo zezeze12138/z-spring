@@ -35,6 +35,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     private String initMehodName;
 
+    private boolean nonPublicAccessAllowed = true;
+
+    private boolean enforceInitMethod = true;
+
     public boolean isSynthetic() {
         return synthetic;
     }
@@ -144,5 +148,13 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     @Override
     public String getInitMethodName() {
         return this.initMehodName;
+    }
+
+    public boolean isNonPublicAccessAllowed() {
+        return this.nonPublicAccessAllowed;
+    }
+
+    public boolean isEnforceInitMethod() {
+        return this.enforceInitMethod;
     }
 }

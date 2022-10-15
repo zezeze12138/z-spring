@@ -121,6 +121,11 @@ public class RootBeanDefinition extends AbstractBeanDefinition{
     }
 
     @Override
+    public void setInitMehodName(String initMehodName) {
+
+    }
+
+    @Override
     public void setRole(int role) {
 
     }
