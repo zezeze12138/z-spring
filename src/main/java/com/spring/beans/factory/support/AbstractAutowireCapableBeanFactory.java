@@ -6,8 +6,10 @@ import com.spring.beans.factory.ObjectFactory;
 import com.spring.beans.factory.config.AutowireCapableBeanFactory;
 import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
+import com.sun.deploy.util.ReflectionUtil;
 import com.sun.xml.internal.ws.util.StringUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.security.AccessController;
@@ -167,10 +169,44 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                     return;
                 }
             }
+            Method methodToInvoke = getInterfaceMethodIfPossible(initMethod);
+            if(System.getSecurityManager() != null){
+
+                AccessController.doPrivileged((PrivilegedAction<Object>) () ->{
+                    if ((!Modifier.isPublic(methodToInvoke.getModifiers()) ||
+                            !Modifier.isPublic(methodToInvoke.getDeclaringClass().getModifiers())) && !methodToInvoke.isAccessible()) {
+                        methodToInvoke.setAccessible(true);
+                    }
+                    return null;
+                }, getAccessControlContext());
+
+                try {
+                    AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () ->
+                        methodToInvoke.invoke(bean), getAccessControlContext());
+                } catch (PrivilegedActionException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+
+            }else{
+                try{
+                    if ((!Modifier.isPublic(methodToInvoke.getModifiers()) ||
+                            !Modifier.isPublic(methodToInvoke.getDeclaringClass().getModifiers())) && !methodToInvoke.isAccessible()) {
+                        methodToInvoke.setAccessible(true);
+                    }
+                    methodToInvoke.invoke(bean);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            }
 
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
+
 
 
     }
