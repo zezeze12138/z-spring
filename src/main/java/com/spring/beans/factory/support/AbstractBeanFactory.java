@@ -90,4 +90,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     protected boolean hasInstantiationAwareBeanPostProcessors() {
         return this.hasInstantiationAwareBeanPostProcessors;
     }
+
+    protected boolean removeSingletonIfCreatedForTypeCheckOnly(String beanName) {
+        if (!this.alreadyCreated.contains(beanName)) {
+            removeSingleton(beanName);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

@@ -17,6 +17,7 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -24,6 +25,8 @@ import java.util.concurrent.ConcurrentMap;
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
     private final ConcurrentMap<String, BeanWrapper> factoryBeanInstanceCache = new ConcurrentHashMap<>();
+
+    private boolean allowRawInjectionDespiteWrapping = false;
 
     @Override
     public <T> T createBean(Class<T> beanClass) {
@@ -83,6 +86,27 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             exposedObject = initializedBean(beanName, exposedObject, mbd);
         }catch (Exception e){
             throw new RuntimeException("初始化bean失败");
+        }
+        if(earlySingletonExposure){
+            Object earlySingletonReference = getSingleton(beanName);
+            if(earlySingletonReference != null){
+                if(exposedObject == bean){
+                    exposedObject = earlySingletonExposure;
+                }else if(!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)){
+                    String[] dependentBeans = getDependentBeans(beanName);
+                    Set<String> actualDependentBeans = new LinkedHashSet<>(dependentBeans.length);
+                    for (String dependentBean : dependentBeans) {
+                        if(!removeSingletonIfCreatedForTypeCheckOnly(dependentBean)){
+                            actualDependentBeans.add(dependentBean);
+                        }
+                    }
+                    if(!actualDependentBeans.isEmpty()){
+                        throw new RuntimeException("该bean名称已经注册到其他bean了");
+                    }
+
+                }
+
+            }
         }
         return null;
     }
