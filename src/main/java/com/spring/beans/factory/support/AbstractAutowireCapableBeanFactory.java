@@ -108,7 +108,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
             }
         }
-        return null;
+        try{
+            registerDisposableBeanIfNecessary(beanName, bean, mbd);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return exposedObject;
     }
 
     private Object initializedBean(String beanName, final Object bean, RootBeanDefinition mbd) {

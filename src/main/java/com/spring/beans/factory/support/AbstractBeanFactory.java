@@ -100,4 +100,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
             return false;
         }
     }
+
+    protected  void registerDisposableBeanIfNecessary(String beanName, Object bean, RootBeanDefinition mbd){
+
+    }
 }
