@@ -220,4 +220,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
             return (dependentBeans != null ? dependentBeans.toArray(new String[0]) : new String[0]);
         }
     }
+
+    public void registerDisposableBean(String beanName, DisposableBean bean){
+        synchronized (this.disposableBeans){
+            this.disposableBeans.put(beanName, bean);
+        }
+    }
 }

@@ -1,13 +1,14 @@
 package com.spring.beans.factory.support;
 
+import com.spring.beans.factory.DisposableBean;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.ConfigurableBeanFactory;
+import com.spring.beans.factory.config.Scope;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -18,6 +19,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     private final Set<String> alreadyCreated = Collections.newSetFromMap(new ConcurrentHashMap<>(256));
 
     private final List<BeanPostProcessor> beanPostProcessors = new CopyOnWriteArrayList<>();
+
+    private final Map<String, Scope> scopes = new LinkedHashMap<>(8);
 
     private volatile boolean hasInstantiationAwareBeanPostProcessors;
 
@@ -102,6 +105,21 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     }
 
     protected  void registerDisposableBeanIfNecessary(String beanName, Object bean, RootBeanDefinition mbd){
+        AccessControlContext acc = (System.getSecurityManager() != null ? getAccessControlContext() : null);
+        if(!mbd.isPrototype() && requiresDestruction(bean, mbd)){
+            if(mbd.isSingleton()){
+                registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
+            }else{
+                Scope scope = this.scopes.get(mbd.getScope());
+                if(scope == null){
+                    throw new RuntimeException("没有为作用域名称注册作用域");
+                }
+                scope.registerDestructionCallback(beanName, new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
+            }
+        }
+    }
 
+    private boolean requiresDestruction(Object bean, RootBeanDefinition mbd) {
+        return false;
     }
 }
