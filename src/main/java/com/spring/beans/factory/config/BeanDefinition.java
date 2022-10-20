@@ -75,5 +75,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
         return !getPropertyValues().isEmpty();
     }
 
+    String getDestroyMethodName();
+
 
 }

@@ -39,6 +39,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     private boolean enforceInitMethod = true;
 
+    private String destroyMethodName;
+
     public boolean isSynthetic() {
         return synthetic;
     }
@@ -156,5 +158,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     public boolean isEnforceInitMethod() {
         return this.enforceInitMethod;
+    }
+
+    @Override
+    public String getDestroyMethodName() {
+        return this.destroyMethodName;
     }
 }

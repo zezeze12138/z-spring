@@ -16,6 +16,15 @@ public class DisposableBeanAdapter implements DisposableBean, Runnable, Serializ
 
     }
 
+    public static boolean hasDestroyMethod(Object bean, RootBeanDefinition beanDefinition){
+        if(bean instanceof DisposableBean || bean instanceof AutoCloseable){
+            return true;
+        }
+        String destroyMethodName = beanDefinition.getDestroyMethodName();
+        // TODO: 2022/10/20 逻辑实现
+        return false;
+    }
+
     @Override
     public void destroy() {
 
@@ -24,5 +33,10 @@ public class DisposableBeanAdapter implements DisposableBean, Runnable, Serializ
     @Override
     public void run() {
         destroy();
+    }
+
+    public static boolean hasApplicableProcessors(Object bean, List<BeanPostProcessor> beanPostProcessors) {
+        // TODO: 2022/10/20 逻辑实现
+        return false;
     }
 }

@@ -24,6 +24,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     private volatile boolean hasInstantiationAwareBeanPostProcessors;
 
+    private volatile boolean hasDestructionAwareBeanPostProcessors;
+
     @Override
     public Object getBean(String name) {
         return null;
@@ -120,6 +122,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     }
 
     private boolean requiresDestruction(Object bean, RootBeanDefinition mbd) {
-        return false;
+        return (bean.getClass() != NullBean.class &&
+                (DisposableBeanAdapter.hasDestroyMethod(bean, mbd) || (hasDestructionAwareBeanPostProcessors() &&
+                DisposableBeanAdapter.hasApplicableProcessors(bean, getBeanPostProcessors()))));
+    }
+
+    private boolean hasDestructionAwareBeanPostProcessors() {
+        return this.hasDestructionAwareBeanPostProcessors;
+
     }
 }
