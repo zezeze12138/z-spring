@@ -85,7 +85,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
         this.qualifiers.putAll(original.qualifiers);
     }
 
-    private Class<?> getBeanClass() {
+    public Class<?> getBeanClass() {
         Object beanClassObject =  this.beanClass;
         if(beanClassObject == null){
             throw new RuntimeException("bean定义中没有明确的beanClass");
@@ -136,6 +136,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     public void setBeanClass(Class<?> beanClass){
         this.beanClass = beanClass;
     }
+
+
 
     @Override
     public BeanDefinition getOriginatingBeanDefinition() {

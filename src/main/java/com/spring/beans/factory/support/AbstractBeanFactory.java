@@ -8,6 +8,8 @@ import com.spring.beans.factory.config.Scope;
 
 import java.security.AccessControlContext;
 import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -75,6 +77,25 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     }
 
     protected Class<?> resolveBeanClass(final RootBeanDefinition mbd, String beanName, final Class<?>... typesToMatch){
+        try {
+            if(mbd.hasBeanClass()){
+                return mbd.getBeanClass();
+            }
+            if (System.getSecurityManager() != null) {
+                return AccessController.doPrivileged((PrivilegedExceptionAction<Class<?>>) () ->
+                        doResolveBeanClass(mbd, typesToMatch), getAccessControlContext());
+            }
+            else {
+                return doResolveBeanClass(mbd, typesToMatch);
+            }
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private Class<?> doResolveBeanClass(RootBeanDefinition mbd, Class<?>[] typesToMatch) {
         return null;
     }
 
