@@ -5,6 +5,7 @@ import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.ConfigurableBeanFactory;
 import com.spring.beans.factory.config.Scope;
+import com.spring.core.DecoratingClassLoader;
 
 import java.security.AccessControlContext;
 import java.security.AccessController;
@@ -96,6 +97,31 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     }
 
     private Class<?> doResolveBeanClass(RootBeanDefinition mbd, Class<?>[] typesToMatch) {
+        ClassLoader beanClassLoader = getBeanClassLoader();
+        ClassLoader dynamicLoader = beanClassLoader;
+        boolean freshResolve = false;
+
+        if (!(typesToMatch == null || typesToMatch.length == 0)) {
+            ClassLoader tempClassLoader = getTempClassLoader();
+            if (tempClassLoader != null) {
+                dynamicLoader = tempClassLoader;
+                freshResolve = true;
+                if (tempClassLoader instanceof DecoratingClassLoader) {
+                    DecoratingClassLoader dcl = (DecoratingClassLoader) tempClassLoader;
+                    for (Class<?> typeToMatch : typesToMatch) {
+                        dcl.excludeClass(typeToMatch.getName());
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private ClassLoader getTempClassLoader() {
+        return null;
+    }
+
+    private ClassLoader getBeanClassLoader() {
         return null;
     }
 
