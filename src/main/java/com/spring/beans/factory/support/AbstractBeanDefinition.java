@@ -5,6 +5,7 @@ import com.spring.beans.MutablePropertyValues;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.ConstructorArgumentValues;
 import com.spring.core.io.Resource;
+import com.spring.util.ClassUtils;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -166,4 +167,15 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     public String getDestroyMethodName() {
         return this.destroyMethodName;
     }
+
+    public Class<?> resolveBeanClass(ClassLoader classLoader){
+        String className = getBeanClassName();
+        if(className == null){
+            return null;
+        }
+        Class<?> resolvedClass = ClassUtils.forName(className, classLoader);
+        this.beanClass = resolvedClass;
+        return resolvedClass;
+    }
+
 }

@@ -6,6 +6,7 @@ import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.ConfigurableBeanFactory;
 import com.spring.beans.factory.config.Scope;
 import com.spring.core.DecoratingClassLoader;
+import com.spring.util.ClassUtils;
 
 import java.security.AccessControlContext;
 import java.security.AccessController;
@@ -114,6 +115,38 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
                 }
             }
         }
+        String className = mbd.getBeanClassName();
+        if (className != null) {
+            Object evaluated = evaluateBeanDefinitionString(className, mbd);
+            if (!className.equals(evaluated)) {
+                if (evaluated instanceof Class) {
+                    return (Class<?>) evaluated;
+                }
+                else if (evaluated instanceof String) {
+                    className = (String) evaluated;
+                    freshResolve = true;
+                }
+                else {
+                    throw new RuntimeException("表达式错误");
+                }
+            }
+            if (freshResolve) {
+                if (dynamicLoader != null) {
+                    try {
+                        return dynamicLoader.loadClass(className);
+                    }
+                    catch (ClassNotFoundException ex) {
+                        throw new RuntimeException("无法架子啊该类");
+                    }
+                }
+                return ClassUtils.forName(className, dynamicLoader);
+            }
+        }
+
+        return mbd.resolveBeanClass(beanClassLoader);
+    }
+
+    private Object evaluateBeanDefinitionString(String className, RootBeanDefinition mbd) {
         return null;
     }
 
