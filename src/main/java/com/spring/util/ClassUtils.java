@@ -3,6 +3,7 @@ package com.spring.util;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ForkJoinTask;
 
 import static javafx.fxml.FXMLLoader.getDefaultClassLoader;
 
@@ -15,6 +16,7 @@ import static javafx.fxml.FXMLLoader.getDefaultClassLoader;
 public class ClassUtils {
 
     private static final Map<String, Class<?>> commonClassCache = new HashMap<>(64);
+    private static final Map<String, Class<?>> primitiveTypeNameMap = new HashMap<>(32);
 
     public static Class<?> forName(String className, ClassLoader classLoader) throws ClassNotFoundException {
         Class<?> clazz = resolvePrimitiveClassName(className);
@@ -62,6 +64,10 @@ public class ClassUtils {
     }
 
     private static Class<?> resolvePrimitiveClassName(String className) {
-        return null;
+        Class<?> result = null;
+        if(className != null && className.length() <= 8){
+            result = primitiveTypeNameMap.get(className);
+        }
+        return result;
     }
 }
