@@ -168,7 +168,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
         return this.destroyMethodName;
     }
 
-    public Class<?> resolveBeanClass(ClassLoader classLoader){
+    public Class<?> resolveBeanClass(ClassLoader classLoader) throws ClassNotFoundException {
         String className = getBeanClassName();
         if(className == null){
             return null;
