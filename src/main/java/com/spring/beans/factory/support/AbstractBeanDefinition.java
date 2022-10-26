@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  * 抽象的Bean定义
@@ -41,6 +42,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     private boolean enforceInitMethod = true;
 
     private String destroyMethodName;
+
+    private Supplier<?> instanceSupplier;
 
     public boolean isSynthetic() {
         return synthetic;
@@ -176,6 +179,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
         Class<?> resolvedClass = ClassUtils.forName(className, classLoader);
         this.beanClass = resolvedClass;
         return resolvedClass;
+    }
+
+    public Supplier<?> getInstanceSupplier(){
+        return this.instanceSupplier;
     }
 
 }

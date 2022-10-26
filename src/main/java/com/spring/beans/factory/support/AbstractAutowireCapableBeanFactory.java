@@ -21,6 +21,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Supplier;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
@@ -330,6 +331,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     private BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, Object[] args) {
+        Class<?> beanClass = resolveBeanClass(mbd, beanName);
+
+        Supplier<?> instanceSupplier = mbd.getInstanceSupplier();
+        if(instanceSupplier != null){
+            return obtainFromSupplier(instanceSupplier, beanName);
+        }
+        if(mbd.getFactoryMethodName() != null){
+            return instantiateUsingFactoryMethod(beanName, mbd, args);
+        }
+        return null;
+    }
+
+    private BeanWrapper instantiateUsingFactoryMethod(String beanName, RootBeanDefinition mbd, Object[] args) {
+        return null;
+    }
+
+    private BeanWrapper obtainFromSupplier(Supplier<?> instanceSupplier, String beanName) {
         return null;
     }
 }
