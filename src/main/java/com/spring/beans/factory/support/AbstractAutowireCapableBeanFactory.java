@@ -8,6 +8,8 @@ import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import com.sun.deploy.util.ReflectionUtil;
 import com.sun.xml.internal.ws.util.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,6 +30,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     private final ConcurrentMap<String, BeanWrapper> factoryBeanInstanceCache = new ConcurrentHashMap<>();
 
     private boolean allowRawInjectionDespiteWrapping = false;
+
+    protected final Log logger = LogFactory.getLog(getClass());
 
     @Override
     public <T> T createBean(Class<T> beanClass) {
@@ -344,10 +348,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     private BeanWrapper instantiateUsingFactoryMethod(String beanName, RootBeanDefinition mbd, Object[] args) {
-        return null;
+        return new ConstructorResolver(this).instantiateUsingFactoryMethod(beanName, mbd, args);
     }
 
     private BeanWrapper obtainFromSupplier(Supplier<?> instanceSupplier, String beanName) {
         return null;
+    }
+
+    Log getLogger() {
+        return logger;
     }
 }
