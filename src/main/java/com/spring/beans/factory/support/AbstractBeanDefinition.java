@@ -1,6 +1,7 @@
 package com.spring.beans.factory.support;
 
 import com.spring.beans.BeanMetadataAttributeAccessor;
+import com.spring.beans.BeanWrapper;
 import com.spring.beans.MutablePropertyValues;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.ConstructorArgumentValues;

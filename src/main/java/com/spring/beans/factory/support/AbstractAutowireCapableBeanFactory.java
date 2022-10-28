@@ -1,11 +1,13 @@
 package com.spring.beans.factory.support;
 
 import com.spring.beans.BeanWrapper;
+import com.spring.beans.BeanWrapperImpl;
 import com.spring.beans.factory.InitializingBean;
 import com.spring.beans.factory.ObjectFactory;
 import com.spring.beans.factory.config.AutowireCapableBeanFactory;
 import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
+import com.spring.core.NameThreadLocal;
 import com.sun.deploy.util.ReflectionUtil;
 import com.sun.xml.internal.ws.util.StringUtils;
 import org.apache.commons.logging.Log;
@@ -32,6 +34,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     private boolean allowRawInjectionDespiteWrapping = false;
 
     protected final Log logger = LogFactory.getLog(getClass());
+
+    private final NameThreadLocal<String> currentlyCreateBean = new NameThreadLocal<>("Currently created bean");
 
     @Override
     public <T> T createBean(Class<T> beanClass) {
@@ -352,7 +356,25 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     private BeanWrapper obtainFromSupplier(Supplier<?> instanceSupplier, String beanName) {
-        return null;
+        Object instance;
+
+        String outerBean = this.currentlyCreateBean.get();
+        this.currentlyCreateBean.set(beanName);
+        try{
+            instance = instanceSupplier.get();
+        }finally {
+            if(outerBean != null){
+                this.currentlyCreateBean.set(outerBean);
+            }else{
+                this.currentlyCreateBean.remove();
+            }
+        }
+        if(instance == null){
+            instance = new NullBean();
+        }
+        BeanWrapper bw = new BeanWrapperImpl(instance);
+        initBeanWrapper(bw);
+        return bw;
     }
 
     Log getLogger() {

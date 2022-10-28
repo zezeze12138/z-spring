@@ -1,5 +1,6 @@
 package com.spring.beans.factory.support;
 
+import com.spring.beans.BeanWrapper;
 import com.spring.beans.factory.DisposableBean;
 import com.spring.beans.factory.config.BeanDefinition;
 import com.spring.beans.factory.config.BeanPostProcessor;
@@ -97,7 +98,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     }
 
-    private Class<?> doResolveBeanClass(RootBeanDefinition mbd, Class<?>[] typesToMatch) {
+    private Class<?> doResolveBeanClass(RootBeanDefinition mbd, Class<?>[] typesToMatch) throws ClassNotFoundException {
         ClassLoader beanClassLoader = getBeanClassLoader();
         ClassLoader dynamicLoader = beanClassLoader;
         boolean freshResolve = false;
@@ -139,7 +140,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
                         throw new RuntimeException("无法架子啊该类");
                     }
                 }
-                return ClassUtils.forName(className, dynamicLoader);
+                try {
+                    return ClassUtils.forName(className, dynamicLoader);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -209,6 +214,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     private boolean hasDestructionAwareBeanPostProcessors() {
         return this.hasDestructionAwareBeanPostProcessors;
+
+    }
+
+    protected void initBeanWrapper(BeanWrapper bw){
 
     }
 }
