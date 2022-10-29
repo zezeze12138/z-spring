@@ -2,8 +2,7 @@ package com.spring.beans.factory.support;
 
 import com.spring.beans.BeanWrapper;
 import com.spring.beans.BeanWrapperImpl;
-import com.spring.beans.factory.InitializingBean;
-import com.spring.beans.factory.ObjectFactory;
+import com.spring.beans.factory.*;
 import com.spring.beans.factory.config.AutowireCapableBeanFactory;
 import com.spring.beans.factory.config.BeanPostProcessor;
 import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
@@ -304,7 +303,20 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     private void invokeAwareMethods(final String beanName, final Object bean) {
-
+        if(bean instanceof Aware){
+            if(bean instanceof BeanNameAware){
+                ((BeanNameAware) bean).setBeanName(beanName);
+            }
+            if(bean instanceof BeanClassLoaderAware){
+                ClassLoader bcl = getBeanClassLoader();
+                if(bcl != null){
+                    ((BeanClassLoaderAware) bean).setBeanClassLoader(bcl);
+                }
+            }
+            if(bean instanceof BeanFactoryAware){
+                ((BeanFactoryAware) bean).setBeanFactory(AbstractAutowireCapableBeanFactory.this);
+            }
+        }
     }
 
     private void populateBean(String beanName, RootBeanDefinition mbd, BeanWrapper instanceWrapper) {

@@ -31,6 +31,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     private volatile boolean hasDestructionAwareBeanPostProcessors;
 
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+
     @Override
     public Object getBean(String name) {
         return null;
@@ -159,10 +161,6 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
         return null;
     }
 
-    private ClassLoader getBeanClassLoader() {
-        return null;
-    }
-
     protected abstract BeanDefinition getBeanDefinition(String beanName);
 
     public boolean hasBeanCreationStarted(){
@@ -219,5 +217,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     protected void initBeanWrapper(BeanWrapper bw){
 
+    }
+
+    public ClassLoader getBeanClassLoader(){
+        return this.beanClassLoader;
     }
 }

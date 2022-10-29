@@ -69,4 +69,8 @@ public class ClassUtils {
         }
         return result;
     }
+
+    public static ClassLoader getDefaultClassLoader() {
+        return null;
+    }
 }
