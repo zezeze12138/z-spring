@@ -222,4 +222,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     public ClassLoader getBeanClassLoader(){
         return this.beanClassLoader;
     }
+
+    public boolean hashInstantiationAwareBeanPostProcessors(){
+        return this.hasInstantiationAwareBeanPostProcessors;
+    }
 }

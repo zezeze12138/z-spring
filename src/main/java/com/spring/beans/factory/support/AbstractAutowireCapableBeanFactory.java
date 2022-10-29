@@ -5,6 +5,7 @@ import com.spring.beans.BeanWrapperImpl;
 import com.spring.beans.factory.*;
 import com.spring.beans.factory.config.AutowireCapableBeanFactory;
 import com.spring.beans.factory.config.BeanPostProcessor;
+import com.spring.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import com.spring.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import com.spring.core.NameThreadLocal;
 import com.sun.deploy.util.ReflectionUtil;
@@ -319,12 +320,22 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
     }
 
-    private void populateBean(String beanName, RootBeanDefinition mbd, BeanWrapper instanceWrapper) {
+    private void populateBean(String beanName, RootBeanDefinition mbd, BeanWrapper instanceWrapper) throws Exception {
         if(instanceWrapper == null){
             if(mbd.hasPropertyValues()){
                 throw new RuntimeException("空实例不能获取到属性值");
             }else {
                 return;
+            }
+        }
+        if(!mbd.isSynthetic() && hashInstantiationAwareBeanPostProcessors()){
+            for(BeanPostProcessor bp : getBeanPostProcessors()){
+                if(bp instanceof SmartInstantiationAwareBeanPostProcessor){
+                    InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
+                    if(!ibp.postProcessAfterInstantiation(instanceWrapper.getWrappedInstance(), beanName)){
+                        return;
+                    }
+                }
             }
         }
     }
