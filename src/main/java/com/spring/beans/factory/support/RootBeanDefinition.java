@@ -3,6 +3,7 @@ package com.spring.beans.factory.support;
 import com.spring.beans.MutablePropertyValues;
 import com.spring.beans.factory.config.BeanDefinition;
 
+import java.lang.reflect.Executable;
 import java.util.Set;
 
 /**
@@ -14,7 +15,13 @@ public class RootBeanDefinition extends AbstractBeanDefinition{
 
     boolean postProcessed = false;
 
+    final Object constructorArgumentLock = new Object();
+
     private Set<String> externallyManagedInitMethods;
+
+    Executable resolvedConstructorOrFactoryMethod;
+
+    boolean constructorArgumentsResolved = false;
 
     public RootBeanDefinition(BeanDefinition original) {
         super(original);

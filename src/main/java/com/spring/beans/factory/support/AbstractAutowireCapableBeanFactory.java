@@ -371,6 +371,32 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         if(mbd.getFactoryMethodName() != null){
             return instantiateUsingFactoryMethod(beanName, mbd, args);
         }
+
+        boolean resolved = false;
+        boolean autowireNecessary = false;
+        if(args == null){
+            synchronized (mbd.constructorArgumentLock){
+                if(mbd.resolvedConstructorOrFactoryMethod != null){
+                    resolved = true;
+                    autowireNecessary = mbd.constructorArgumentsResolved;
+                }
+            }
+        }
+        if(resolved){
+            if(autowireNecessary){
+                return autowireConstructor(beanName, mbd, null, null);
+            }else{
+                return instantiateBean(beanName, mbd, null, null);
+            }
+        }
+        return null;
+    }
+
+    private BeanWrapper instantiateBean(String beanName, RootBeanDefinition mbd, Object o, Object o1) {
+        return null;
+    }
+
+    private BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd, Object o, Object o1) {
         return null;
     }
 
