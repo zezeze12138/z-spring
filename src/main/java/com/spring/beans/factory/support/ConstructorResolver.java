@@ -3,6 +3,8 @@ package com.spring.beans.factory.support;
 import com.spring.beans.BeanWrapper;
 import org.apache.commons.logging.Log;
 
+import java.lang.reflect.Constructor;
+
 /**
  * @Author: zengqz
  * @Description: TODO
@@ -21,6 +23,10 @@ public class ConstructorResolver {
     }
 
     public BeanWrapper instantiateUsingFactoryMethod(String beanName, RootBeanDefinition mbd, Object[] args) {
+        return null;
+    }
+
+    public BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd, Constructor<?>[] ctors, Object[] explicitArgs) {
         return null;
     }
 }

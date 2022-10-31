@@ -13,6 +13,7 @@ import com.sun.xml.internal.ws.util.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -396,8 +397,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return null;
     }
 
-    private BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd, Object o, Object o1) {
-        return null;
+    private BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd, Constructor<?>[] ctors, Object[] explicitArgs) {
+        return new ConstructorResolver(this).autowireConstructor(beanName, mbd, ctors,explicitArgs);
     }
 
     private BeanWrapper instantiateUsingFactoryMethod(String beanName, RootBeanDefinition mbd, Object[] args) {
