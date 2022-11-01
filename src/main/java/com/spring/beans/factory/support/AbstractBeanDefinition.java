@@ -186,4 +186,12 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
         return this.instanceSupplier;
     }
 
+    public int getResolvedAutowireMode(){
+        return 0;
+    }
+
+    public boolean hasConstructorArgumentValues() {
+        return (this.constructorArgumentValues != null && !this.constructorArgumentValues.isEmpty());
+    }
+
 }

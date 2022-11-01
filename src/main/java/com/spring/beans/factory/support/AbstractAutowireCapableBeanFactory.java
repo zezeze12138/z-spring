@@ -390,7 +390,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 return instantiateBean(beanName, mbd, null, null);
             }
         }
+        Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
+        if (ctors != null || mbd.getResolvedAutowireMode() == 3 ||
+                mbd.hasConstructorArgumentValues() || !(args == null || args.length == 0)) {
+            return autowireConstructor(beanName, mbd, ctors, args);
+        }
         return null;
+    }
+
+    private Constructor<?>[] determineConstructorsFromBeanPostProcessors(Class<?> beanClass, String beanName) {
+        return new Constructor[0];
     }
 
     private BeanWrapper instantiateBean(String beanName, RootBeanDefinition mbd, Object o, Object o1) {
