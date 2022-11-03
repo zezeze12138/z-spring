@@ -13,6 +13,7 @@ import com.sun.xml.internal.ws.util.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.management.MBeanServer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -404,8 +405,27 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     private BeanWrapper instantiateBean(String beanName, RootBeanDefinition mbd) {
+        try{
+            Object beanInstance = null;
+            final BeanFactory parent = this;
+            if (System.getSecurityManager() != null) {
+                beanInstance = AccessController.doPrivileged((PrivilegedAction<Object>) () ->
+                                getInstantiationStrategy().instantiate(mbd,beanName, parent),
+                        getAccessControlContext());
+            }
+            BeanWrapper bw = new BeanWrapperImpl(beanInstance);
+            initBeanWrapper(bw);
+            return bw;
+        }catch (Throwable ex){
+            throw ex;
+        }
+
+    }
+
+    protected InstantiationStrategy getInstantiationStrategy(){
         return null;
     }
+
 
     private Constructor<?>[] determineConstructorsFromBeanPostProcessors(Class<?> beanClass, String beanName) {
         return new Constructor[0];
