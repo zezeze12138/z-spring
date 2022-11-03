@@ -395,6 +395,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 mbd.hasConstructorArgumentValues() || !(args == null || args.length == 0)) {
             return autowireConstructor(beanName, mbd, ctors, args);
         }
+
+        ctors = mbd.getPreferredConstructors();
+        if(ctors != null){
+            return autowireConstructor(beanName, mbd, ctors, null);
+        }
+        return instantiateBean(beanName, mbd);
+    }
+
+    private BeanWrapper instantiateBean(String beanName, RootBeanDefinition mbd) {
         return null;
     }
 
