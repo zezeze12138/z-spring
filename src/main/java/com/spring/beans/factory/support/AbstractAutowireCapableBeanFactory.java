@@ -31,6 +31,8 @@ import java.util.function.Supplier;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
+    private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
+
     private final ConcurrentMap<String, BeanWrapper> factoryBeanInstanceCache = new ConcurrentHashMap<>();
 
     private boolean allowRawInjectionDespiteWrapping = false;
@@ -423,7 +425,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     protected InstantiationStrategy getInstantiationStrategy(){
-        return null;
+        return this.instantiationStrategy;
     }
 
 
