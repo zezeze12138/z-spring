@@ -47,6 +47,6 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
     }
 
     private Object instantiateWithMethodInjection(RootBeanDefinition bd, String beanName, BeanFactory owner) {
-        return null;
+        throw new RuntimeException("SimpleInstantiationStrategy中不支持方法注入");
     }
 }
