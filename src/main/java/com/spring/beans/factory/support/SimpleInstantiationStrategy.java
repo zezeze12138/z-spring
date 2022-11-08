@@ -46,7 +46,11 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
         }
     }
 
-    private Object instantiateWithMethodInjection(RootBeanDefinition bd, String beanName, BeanFactory owner) {
+    protected Object instantiateWithMethodInjection(RootBeanDefinition bd, String beanName, BeanFactory owner) {
         throw new RuntimeException("SimpleInstantiationStrategy中不支持方法注入");
+    }
+
+    protected Object instantiateWithMethodInjection(RootBeanDefinition bd, String beanName, BeanFactory owner, Constructor<?> ctor, Object... args) {
+        throw new UnsupportedOperationException("SimpleInstantiationStrategy中不支持方法注入");
     }
 }
