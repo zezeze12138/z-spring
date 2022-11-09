@@ -1,5 +1,6 @@
 package com.spring.beans.factory.support;
 
+import com.spring.beans.BeanUtils;
 import com.spring.beans.factory.BeanFactory;
 
 import java.lang.reflect.Constructor;
@@ -24,10 +25,25 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
     }
 
     private class CglibSubclassCreator {
+        private final RootBeanDefinition beanDefinition;
+        private final BeanFactory owner;
+
+
         public CglibSubclassCreator(RootBeanDefinition bd, BeanFactory owner) {
+            this.beanDefinition = bd;
+            this.owner = owner;
         }
 
         public Object instantiate(Constructor<?> ctor, Object... args) {
+            Class<?> subclass = createEnhancedSubcalss(this.beanDefinition);
+            Object instance;
+            if(ctor == null){
+                instance = BeanUtils.instantiateClass(subclass);
+            }
+            return null;
+        }
+
+        private Class<?> createEnhancedSubcalss(RootBeanDefinition beanDefinition) {
             return null;
         }
     }

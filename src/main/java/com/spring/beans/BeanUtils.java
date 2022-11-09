@@ -13,4 +13,16 @@ public class BeanUtils {
 
         return null;
     }
+
+    public static Object instantiateClass(Class<?> clazz) {
+        if(clazz.isInterface()){
+            throw new RuntimeException("不能是接口类");
+        }
+        try{
+            return instantiateClass(clazz.getDeclaredConstructor());
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            throw new RuntimeException("未发现默认的构造方法");
+        }
+    }
 }
