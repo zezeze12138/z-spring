@@ -4,6 +4,7 @@ import com.spring.beans.BeanUtils;
 import com.spring.beans.factory.BeanFactory;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @Author: zengqz
@@ -39,7 +40,21 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
             Object instance;
             if(ctor == null){
                 instance = BeanUtils.instantiateClass(subclass);
+            }else {
+                try{
+                    Constructor<?> enhancedSubcalssConstructor = subclass.getConstructor(ctor.getParameterTypes());
+                    instance = enhancedSubcalssConstructor.newInstance(args);
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
             }
+
             return null;
         }
 
