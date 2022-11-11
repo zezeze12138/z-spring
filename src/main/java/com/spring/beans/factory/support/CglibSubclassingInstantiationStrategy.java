@@ -2,9 +2,11 @@ package com.spring.beans.factory.support;
 
 import com.spring.beans.BeanUtils;
 import com.spring.beans.factory.BeanFactory;
+import com.spring.cglib.proxy.Callback;
+import com.spring.cglib.proxy.Factory;
+import com.spring.cglib.proxy.NoOp;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @Author: zengqz
@@ -44,22 +46,34 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
                 try{
                     Constructor<?> enhancedSubcalssConstructor = subclass.getConstructor(ctor.getParameterTypes());
                     instance = enhancedSubcalssConstructor.newInstance(args);
-                } catch (NoSuchMethodException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException("未能调用CGLIB增强子类的构造函数");
                 }
             }
-
-            return null;
+            Factory factory = (Factory) instance;
+            factory.setCallbacks(new Callback[]{
+                    NoOp.INSTANCE,
+                    new LookupOverrideMethodInterceptor(this.beanDefinition, this.owner),
+                    new ReplaceOverrideMethodInterceptor(this.beanDefinition, this.owner)
+            });
+            return instance;
         }
 
         private Class<?> createEnhancedSubcalss(RootBeanDefinition beanDefinition) {
             return null;
+        }
+
+        private class LookupOverrideMethodInterceptor implements Callback {
+            public LookupOverrideMethodInterceptor(RootBeanDefinition beanDefinition, BeanFactory owner) {
+
+            }
+        }
+
+        private class ReplaceOverrideMethodInterceptor implements Callback {
+            public ReplaceOverrideMethodInterceptor(RootBeanDefinition beanDefinition, BeanFactory owner) {
+
+            }
         }
     }
 }
