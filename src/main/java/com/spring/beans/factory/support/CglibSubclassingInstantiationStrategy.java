@@ -2,11 +2,10 @@ package com.spring.beans.factory.support;
 
 import com.spring.beans.BeanUtils;
 import com.spring.beans.factory.BeanFactory;
-import com.spring.cglib.proxy.Callback;
-import com.spring.cglib.proxy.Factory;
-import com.spring.cglib.proxy.NoOp;
+import com.spring.cglib.proxy.*;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 /**
  * @Author: zengqz
@@ -38,7 +37,7 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
         }
 
         public Object instantiate(Constructor<?> ctor, Object... args) {
-            Class<?> subclass = createEnhancedSubcalss(this.beanDefinition);
+                Class<?> subclass = createEnhancedSubcalss(this.beanDefinition);
             Object instance;
             if(ctor == null){
                 instance = BeanUtils.instantiateClass(subclass);
@@ -64,15 +63,33 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
             return null;
         }
 
-        private class LookupOverrideMethodInterceptor implements Callback {
-            public LookupOverrideMethodInterceptor(RootBeanDefinition beanDefinition, BeanFactory owner) {
+        private class LookupOverrideMethodInterceptor extends CglibIdentitySupport implements MethodInterceptor {
 
+            private final BeanFactory owner;
+
+            public LookupOverrideMethodInterceptor(RootBeanDefinition beanDefinition, BeanFactory owner) {
+                super(beanDefinition);
+                this.owner = owner;
+            }
+
+            @Override
+            public Object intercept(Object var1, Method var2, Object[] var3, MethodProxy var4) {
+                return null;
             }
         }
 
         private class ReplaceOverrideMethodInterceptor implements Callback {
             public ReplaceOverrideMethodInterceptor(RootBeanDefinition beanDefinition, BeanFactory owner) {
 
+            }
+        }
+
+        private class CglibIdentitySupport {
+
+            private final RootBeanDefinition beanDefinition;
+
+            public CglibIdentitySupport(RootBeanDefinition beanDefinition) {
+                this.beanDefinition = beanDefinition;
             }
         }
     }
