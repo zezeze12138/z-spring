@@ -37,7 +37,7 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
         }
 
         public Object instantiate(Constructor<?> ctor, Object... args) {
-                Class<?> subclass = createEnhancedSubcalss(this.beanDefinition);
+            Class<?> subclass = createEnhancedSubcalss(this.beanDefinition);
             Object instance;
             if(ctor == null){
                 instance = BeanUtils.instantiateClass(subclass);
@@ -73,9 +73,15 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
             }
 
             @Override
-            public Object intercept(Object var1, Method var2, Object[] var3, MethodProxy var4) {
+            public Object intercept(Object var1, Method method, Object[] var3, MethodProxy var4) {
+                LookupOverride lo = (LookupOverride) getBeanDefinition().getMethodOverrides().getOverride(method);
                 return null;
+
             }
+        }
+
+        private RootBeanDefinition getBeanDefinition() {
+            return null;
         }
 
         private class ReplaceOverrideMethodInterceptor implements Callback {

@@ -46,6 +46,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
     private Supplier<?> instanceSupplier;
 
+    private MethodOverrides methodOverrides = new MethodOverrides();
+
     public boolean isSynthetic() {
         return synthetic;
     }
@@ -193,5 +195,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
     public boolean hasConstructorArgumentValues() {
         return (this.constructorArgumentValues != null && !this.constructorArgumentValues.isEmpty());
     }
+
+    public MethodOverrides getMethodOverrides(){
+        return this.methodOverrides;
+    }
+
 
 }
