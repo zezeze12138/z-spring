@@ -10,6 +10,24 @@ import java.lang.reflect.Method;
  */
 public abstract class MethodOverride {
 
+    private final String methodName;
+
+    private boolean overloaded = true;
+
+    private Object source;
+
+    public MethodOverride(String methodName) {
+        this.methodName = methodName;
+    }
+
     public abstract boolean matches(Method method);
+
+    public String getMethodName(){
+        return this.methodName;
+    }
+
+    public boolean isOverloaded(){
+        return this.overloaded;
+    }
 
 }
