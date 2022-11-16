@@ -28,4 +28,8 @@ public class LookupOverride extends MethodOverride{
             return (method.getName().equals(getMethodName()) && (!isOverloaded() || Modifier.isAbstract(method.getModifiers()) || method.getParameterCount() == 0));
         }
     }
+
+    public String getBeanName(){
+        return this.beanName;
+    }
 }

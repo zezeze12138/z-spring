@@ -73,13 +73,29 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
             }
 
             @Override
-            public Object intercept(Object var1, Method method, Object[] var3, MethodProxy var4) {
+            public Object intercept(Object obj, Method method, Object[] args, MethodProxy mp) {
                 LookupOverride lo = (LookupOverride) getBeanDefinition().getMethodOverrides().getOverride(method);
-                return null;
+                Object[] argsToUse = (args.length > 0 ? args : null);
+                if(hasText(lo.getBeanName())){
+                    return (argsToUse != null ? this.owner.getBean(lo.getBeanName(), argsToUse) : this.owner.getBean(lo.getBeanName()));
+                }
+                return (argsToUse != null ? this.owner.getBean(method.getReturnType(), argsToUse) : this.owner.getBean(method.getReturnType()));
 
             }
         }
+        public  boolean hasText(String str) {
+            return (str != null && !str.isEmpty() && containsText(str));
+        }
 
+        private  boolean containsText(CharSequence str) {
+            int strLen = str.length();
+            for (int i = 0; i < strLen; i++) {
+                if (!Character.isWhitespace(str.charAt(i))) {
+                    return true;
+                }
+            }
+            return false;
+        }
         private RootBeanDefinition getBeanDefinition() {
             return null;
         }

@@ -20,6 +20,10 @@ public interface BeanFactory {
 
     <T> Object getBean(String name, Class<T> requiredType);
 
+    Object getBean(String name, Object... args);
+
+    <T> T getBean(Class<T> requiredType, Object... args);
+
     // TODO: 2022/8/14 下面还有其他获取bean的方法
 
     boolean containsBean(String name);
