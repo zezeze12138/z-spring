@@ -96,13 +96,20 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
             }
             return false;
         }
-        private RootBeanDefinition getBeanDefinition() {
-            return null;
-        }
 
-        private class ReplaceOverrideMethodInterceptor implements Callback {
+        private class ReplaceOverrideMethodInterceptor extends CglibIdentitySupport implements MethodInterceptor {
+
+            private final BeanFactory owner;
+
             public ReplaceOverrideMethodInterceptor(RootBeanDefinition beanDefinition, BeanFactory owner) {
+                super(beanDefinition);
+                this.owner = owner;
+            }
 
+
+            @Override
+            public Object intercept(Object var1, Method var2, Object[] var3, MethodProxy var4) {
+                return null;
             }
         }
 
@@ -112,6 +119,10 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
 
             public CglibIdentitySupport(RootBeanDefinition beanDefinition) {
                 this.beanDefinition = beanDefinition;
+            }
+
+            public RootBeanDefinition getBeanDefinition() {
+                return this.beanDefinition;
             }
         }
     }
