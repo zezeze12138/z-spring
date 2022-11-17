@@ -108,8 +108,10 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
 
 
             @Override
-            public Object intercept(Object var1, Method var2, Object[] var3, MethodProxy var4) {
-                return null;
+            public Object intercept(Object obj, Method method, Object[] args, MethodProxy mp) {
+                ReplaceOverride ro = (ReplaceOverride) getBeanDefinition().getMethodOverrides().getOverride(method);
+                MethodReplacer mr = this.owner.getBean(ro.getMethodReplacerBeanName(), MethodReplacer.class);
+                return mr.reimplement(obj, method, args);
             }
         }
 
