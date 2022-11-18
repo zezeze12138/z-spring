@@ -60,6 +60,7 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
         }
 
         private Class<?> createEnhancedSubcalss(RootBeanDefinition beanDefinition) {
+            Enhancer enhancer = new Enhancer();
             return null;
         }
 
@@ -105,7 +106,6 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
                 super(beanDefinition);
                 this.owner = owner;
             }
-
 
             @Override
             public Object intercept(Object obj, Method method, Object[] args, MethodProxy mp) {
