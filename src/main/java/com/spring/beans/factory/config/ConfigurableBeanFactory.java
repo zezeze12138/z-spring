@@ -32,4 +32,8 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
      * @param tempClassLoader
      */
     void setTempClassLoader(ClassLoader tempClassLoader);
+
+    ClassLoader getBeanClassLoader();
+
+
 }

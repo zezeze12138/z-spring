@@ -2,6 +2,8 @@ package com.spring.beans.factory.support;
 
 import com.spring.beans.BeanUtils;
 import com.spring.beans.factory.BeanFactory;
+import com.spring.beans.factory.config.ConfigurableBeanFactory;
+import com.spring.cglib.core.GeneratorStrategy;
 import com.spring.cglib.proxy.*;
 
 import java.lang.reflect.Constructor;
@@ -61,6 +63,12 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
 
         private Class<?> createEnhancedSubcalss(RootBeanDefinition beanDefinition) {
             Enhancer enhancer = new Enhancer();
+            enhancer.setSuperclass(beanDefinition.getBeanClass());
+
+            if(this.owner instanceof ConfigurableBeanFactory){
+                ClassLoader c1 = ((ConfigurableBeanFactory) this.owner).getBeanClassLoader();
+                enhancer.setStrategy(new ClassLoaderAwareGeneratorStrategy(c1));
+            }
             return null;
         }
 
@@ -125,6 +133,11 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
 
             public RootBeanDefinition getBeanDefinition() {
                 return this.beanDefinition;
+            }
+        }
+
+        private class ClassLoaderAwareGeneratorStrategy implements GeneratorStrategy {
+            public ClassLoaderAwareGeneratorStrategy(ClassLoader classLoader) {
             }
         }
     }
