@@ -12,6 +12,8 @@ public abstract class AbstractClassGenerator {
 
     private GeneratorStrategy strategy =  DefaultGeneratorStrategy.INSTANCE;
 
+    private NamingPolicy namingPolicy = DefaultNamingPolicy.INSTANCE;
+
     public void setContextClass(Class contextClass){
         this.contextClass = contextClass;
     }
@@ -21,6 +23,12 @@ public abstract class AbstractClassGenerator {
             strategy = DefaultGeneratorStrategy.INSTANCE;
             this.strategy = strategy;
         }
+    }
+
+    public void setNamingPolicy(NamingPolicy namingPolicy) {
+        if (namingPolicy == null)
+            namingPolicy = DefaultNamingPolicy.INSTANCE;
+        this.namingPolicy = namingPolicy;
     }
 
 }
