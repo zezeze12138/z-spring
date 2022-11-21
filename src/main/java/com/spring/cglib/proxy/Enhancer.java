@@ -1,6 +1,7 @@
 package com.spring.cglib.proxy;
 
 import com.spring.cglib.core.AbstractClassGenerator;
+import jdk.internal.org.objectweb.asm.ClassVisitor;
 
 /**
  * @Author: zengqz
@@ -40,5 +41,10 @@ public class Enhancer extends AbstractClassGenerator{
             throw new RuntimeException("数组不能为空");
         }
         this.callbacks = callbacks;
+    }
+
+    @Override
+    public void genertateClass(ClassVisitor classVisitor) {
+
     }
 }
