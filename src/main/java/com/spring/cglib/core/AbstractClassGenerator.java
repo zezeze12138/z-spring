@@ -17,6 +17,8 @@ import java.util.function.Predicate;
  */
 public abstract class AbstractClassGenerator implements ClassGenerator {
 
+    private static final ThreadLocal CURRENT = new ThreadLocal();
+
     private Class contextClass;
 
     private GeneratorStrategy strategy =  DefaultGeneratorStrategy.INSTANCE;
@@ -74,6 +76,9 @@ public abstract class AbstractClassGenerator implements ClassGenerator {
     }
 
     private Class generate(ClassLoaderData classLoaderData) {
+        Class gen;
+        Object save = CURRENT.get();
+        CURRENT.set(this);
         return null;
     }
 }
