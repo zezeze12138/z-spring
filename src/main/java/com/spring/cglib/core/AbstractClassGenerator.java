@@ -15,7 +15,7 @@ import java.util.function.Predicate;
  * @CreateTime: 2022-11-18  22:40
  * @Version: 1.0
  */
-public abstract class AbstractClassGenerator implements ClassGenerator {
+public abstract class AbstractClassGenerator<T> implements ClassGenerator {
 
     private static final ThreadLocal CURRENT = new ThreadLocal();
 
@@ -71,8 +71,8 @@ public abstract class AbstractClassGenerator implements ClassGenerator {
         }
     }
 
-    private Object wrapCachedClass(Class klass) {
-        return null;
+    private T wrapCachedClass(Class klass) {
+        return (T) new WeakReference(klass);
     }
 
     private Class generate(ClassLoaderData classLoaderData) {
