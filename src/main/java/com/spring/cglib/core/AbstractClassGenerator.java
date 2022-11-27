@@ -69,16 +69,30 @@ public abstract class AbstractClassGenerator<T> implements ClassGenerator {
                     };
             generatedClasses = new LoadingCache<AbstractClassGenerator, Object, Object>(GET_KEY, load);
         }
+
+        public ClassLoader getClassLoader(){
+            return classLoader.get();
+        }
     }
 
     private T wrapCachedClass(Class klass) {
         return (T) new WeakReference(klass);
     }
 
-    private Class generate(ClassLoaderData classLoaderData) {
+    private Class generate(ClassLoaderData data) {
         Class gen;
         Object save = CURRENT.get();
         CURRENT.set(this);
+        try{
+            ClassLoader classLoader = data.getClassLoader();
+            if(classLoader == null){
+                throw new RuntimeException("尝试定义类时ClassLoader为空");
+            }
+        }catch (RuntimeException | Error ex){
+            throw ex;
+        }finally {
+            CURRENT.set(save);
+        }
         return null;
     }
 }
