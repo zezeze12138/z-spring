@@ -7,7 +7,6 @@ import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * @Author: zengqz
@@ -26,6 +25,21 @@ public abstract class AbstractClassGenerator<T> implements ClassGenerator {
     private NamingPolicy namingPolicy = DefaultNamingPolicy.INSTANCE;
 
     private Object key;
+
+    private Source source;
+
+    private String className;
+
+    private String namePrefix;
+
+    protected static class Source {
+
+        String name;
+
+        public Source(String name) {
+            this.name = name;
+        }
+    }
 
     public void setContextClass(Class contextClass){
         this.contextClass = contextClass;
@@ -73,13 +87,21 @@ public abstract class AbstractClassGenerator<T> implements ClassGenerator {
         public ClassLoader getClassLoader(){
             return classLoader.get();
         }
+
+        public void reserveName(String name) {
+            reservedClassNames.add(name);
+        }
+
+        public Predicate getUniqueNamePredicate() {
+            return uniqueNamePredicate;
+        }
     }
 
     private T wrapCachedClass(Class klass) {
         return (T) new WeakReference(klass);
     }
 
-    private Class generate(ClassLoaderData data) {
+    protected Class generate(ClassLoaderData data) {
         Class gen;
         Object save = CURRENT.get();
         CURRENT.set(this);
@@ -88,11 +110,24 @@ public abstract class AbstractClassGenerator<T> implements ClassGenerator {
             if(classLoader == null){
                 throw new RuntimeException("尝试定义类时ClassLoader为空");
             }
+            synchronized(classLoader){
+                String name = generateClassName(data.getUniqueNamePredicate());
+                data.reserveName(name);
+                this.setClassName(name);
+            }
         }catch (RuntimeException | Error ex){
             throw ex;
         }finally {
             CURRENT.set(save);
         }
         return null;
+    }
+
+    private String generateClassName(Predicate nameTestPredicate) {
+        return namingPolicy.getClassName(namePrefix, source.name, key, nameTestPredicate);
+    }
+
+    private void setClassName(String className) {
+        this.className = className;
     }
 }
