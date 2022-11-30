@@ -7,4 +7,7 @@ package com.spring.cglib.core;
  * @Version: 1.0
  */
 public interface GeneratorStrategy {
+
+    <T> byte[] generate(ClassGenerator classGenerator);
+
 }

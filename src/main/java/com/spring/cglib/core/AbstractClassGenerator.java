@@ -120,6 +120,7 @@ public abstract class AbstractClassGenerator<T> implements ClassGenerator {
         }finally {
             CURRENT.set(save);
         }
+        byte[] b = strategy.generate(this);
         return null;
     }
 
